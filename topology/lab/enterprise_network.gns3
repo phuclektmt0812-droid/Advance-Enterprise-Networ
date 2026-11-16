@@ -1,0 +1,23 @@
+{
+  "auto_close": true,
+  "name": "TVI Enterprise Network Lab",
+  "project_id": "tvi-enterprise-lab",
+  "project_type": "local",
+  "revision": 1,
+  "scene_height": 1000,
+  "scene_width": 1600,
+  "show_grid": true,
+  "show_interface_labels": true,
+  "show_layers": true,
+  "show_links": true,
+  "snap_to_grid": true,
+  "grid_size": 25,
+  "zoom": 1.0,
+  "topology": {
+    "computes": [],
+    "drawings": [],
+    "links": [],
+    "nodes": []
+  },
+  "project_notes": "Starter GNS3 project container. Add compatible router, switch, firewall and server appliances, then build links according to docs/network_architecture.md. No device images or licensed appliance files are included."
+}

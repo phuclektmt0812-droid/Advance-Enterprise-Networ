@@ -1,0 +1,140 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 4115 >>
+stream
+BT
+/F1 10 Tf
+50 790 Td
+13 TL
+(TVI ENTERPRISE NETWORK DESIGN AND IMPLEMENTATION) Tj
+T*
+(Technical Foundation Report) Tj
+T*
+(Project: TechViet Innovations \(TVI\) | Sites: HCMC, Hanoi, Da Nang) Tj
+T*
+(1. Executive Summary) Tj
+T*
+(This report records the current design foundation for a three-site enterprise network connectin) Tj
+T*
+(g HCMC Headquarters and Data Center, Hanoi R&D Campus, and Da Nang Logistics Hub. The design ad) Tj
+T*
+(dresses segmentation, IPv4/IPv6 addressing, routing, WAN connectivity, security, QoS, and autom) Tj
+T*
+(ation.) Tj
+T*
+(2. Requirements and Design Targets) Tj
+T*
+(The assignment targets 4,000+ internal users, 10,000+ IoT endpoints, future growth to 10,000+ u) Tj
+T*
+(sers by 2030, a 10/40 Gbps HQ backbone, and 99.99% availability. These are production design ta) Tj
+T*
+(rgets; the educational lab cannot independently demonstrate those throughput, scale, or availab) Tj
+T*
+(ility figures.) Tj
+T*
+(3. Architecture) Tj
+T*
+(HCMC is the central site for headquarters, Data Center, shared services, and Internet/WAN edge.) Tj
+T*
+( Hanoi serves R&D and engineering workloads. Da Nang serves logistics and warehouse IoT workloa) Tj
+T*
+(ds. The campus design uses hierarchical switching, VLAN segmentation, 802.1Q trunks, LACP, STP,) Tj
+T*
+( and gateway redundancy where supported. The Data Center target is a Spine-and-Leaf fabric with) Tj
+T*
+( EVPN-VXLAN subject to image compatibility.) Tj
+T*
+(4. Addressing Baseline) Tj
+T*
+(Proposed IPv4 blocks are HCMC 10.10.0.0/16, Hanoi 10.20.0.0/16, Da Nang 10.30.0.0/16, and WAN t) Tj
+T*
+(ransit 10.255.0.0/16. VLANs include 10 EXEC_FINANCE, 20 RND_ENGINEERING, 30 LOGISTICS_OPS, 40 S) Tj
+T*
+(ERVER, 50 GUEST, 60 IOT, 70 VOICE, 99 MANAGEMENT, and 999 BLACKHOLE. Final VLSM prefixes remain) Tj
+T*
+( pending actual endpoint counts and growth estimates.) Tj
+T*
+(IPv6 examples use 2001:db8:10::/48, 2001:db8:20::/48, and 2001:db8:30::/48 with /64 VLAN prefix) Tj
+T*
+(es. These are documentation-only prefixes and must be replaced for production.) Tj
+T*
+(5. Routing and WAN) Tj
+T*
+(OSPFv2/OSPFv3 are the internal routing targets, with process 10 and Area 0 as the initial lab b) Tj
+T*
+(aseline. BGP AS 65010 is proposed for TVI and AS 65000 for the simulated ISP. The example ISP l) Tj
+T*
+(ink 203.0.113.0/30 is TEST-NET-3 documentation space only. Dual ISP, MPLS, full SD-WAN, MP-BGP ) Tj
+T*
+(EVPN, and IPsec require explicit implementation and validation; a simple routed hub-and-spoke i) Tj
+T*
+(s not equivalent to those technologies.) Tj
+T*
+(6. Services and Security) Tj
+T*
+(DHCP and DNS are planned centrally at HCMC, with DHCP relay on remote client VLAN gateways. NAT) Tj
+T*
+(/PAT is planned at the Internet edge after interface mapping. Security policy separates corpora) Tj
+T*
+(te, guest, IoT, server, voice, and management zones. ACLs, Port Security, DHCP Snooping, and Dy) Tj
+T*
+(namic ARP Inspection must be tested on supported images.) Tj
+T*
+(7. Automation) Tj
+T*
+(The Python automation starter uses Netmiko and PyYAML. It collects timestamped running-configur) Tj
+T*
+(ation and interface-status backups over SSH. VLAN creation for VLANs 10, 20, 30, and 99 require) Tj
+T*
+(s the explicit --apply-vlans option. Inventory entries are disabled by default. Credentials are) Tj
+T*
+( prompted or supplied through environment variables; do not commit secrets.) Tj
+T*
+(8. Validation and Evidence) Tj
+T*
+(Connectivity, routing, security, and QoS test plans are provided in the repository. Tests remai) Tj
+T*
+(n Not Run until executed in the selected lab. Store genuine command outputs and screenshots und) Tj
+T*
+(er evidence/. A feature must not be marked Verified until configuration and test evidence are a) Tj
+T*
+(vailable.) Tj
+T*
+(9. Open Inputs and Limitations) Tj
+T*
+(Before deployment, confirm the lab platform and device images, physical interface map, endpoint) Tj
+T*
+( counts per VLAN/site, final VLSM, IPv6 allocation, WAN transports, wireless support, and featu) Tj
+T*
+(re compatibility. Device configuration files are starter templates with interface-dependent TOD) Tj
+T*
+(Os; they must be reviewed and adapted before use.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+4478
+%%EOF

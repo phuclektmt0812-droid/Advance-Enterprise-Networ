@@ -2,140 +2,71 @@
 # Advanced Enterprise Network Design & Implementation
 
 ## 1. Project Overview
-
-This project designs and implements a scalable enterprise network
-infrastructure for TechViet Innovations (TVI).
-
-The proposed network connects three primary geographical locations:
-
-- Ho Chi Minh City (HCMC): Headquarters, Data Center, and Executive Offices.
+This project designs an enterprise network for TechViet Innovations (TVI), connecting:
+- HCMC: Headquarters, Data Center and Executive Offices.
 - Hanoi: R&D and Engineering Campus.
 - Da Nang: Logistics and Distribution Hub.
 
-The design addresses enterprise requirements for scalability,
-high availability, security, routing, WAN connectivity,
-network automation, and traffic optimization.
+The assignment targets 4,000+ internal users, 10,000+ IoT endpoints and growth to 10,000+ users by 2030. These are design targets; a small virtual lab cannot prove production-scale capacity or 99.99% availability.
 
-The network is designed to support the assignment's target scale:
+## 2. Repository Structure
 
-- 4,000+ internal users.
-- 10,000+ IoT endpoints.
-- External guest networks.
-- Future growth to 10,000+ users by 2030.
-
-## 2. Project Objectives
-
-The main objectives are:
-
-- Design a hierarchical multi-site enterprise network.
-- Implement IPv4 VLSM and IPv6 Dual-Stack addressing.
-- Segment enterprise traffic using VLANs and security policies.
-- Implement Layer 2 switching, EtherChannel, and STP.
-- Provide gateway redundancy using HSRP or VRRP.
-- Deploy OSPF as the internal routing underlay.
-- Use BGP for inter-site and external routing.
-- Design an EVPN-VXLAN or IPsec-based WAN overlay as supported
-  by the selected lab platform.
-- Provide centralized DHCP services and DHCP relay.
-- Implement NAT/PAT, ACLs, and network hardening.
-- Apply QoS policies to prioritize voice traffic.
-- Automate network configuration and backups using Python
-  (Netmiko/NAPALM) or Ansible.
-- Verify connectivity, redundancy, security, and automation.
-
-## 3. Lab Platform
-
-The assignment identifies the following primary platforms:
-
-1. EVE-NG
-2. GNS3
-3. Cisco Modeling Labs (CML)
-
-Cisco Packet Tracer may only be used if the hardware requirements
-for EVE-NG/GNS3 cannot be met and the instructor grants
-pre-approval.
-
-The selected platform and its supported features must be documented
-before implementation.
-
-The implementation must not claim that a feature is functional
-unless it has been configured and tested in the selected environment.
-
-## 4. Documentation
-
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `docs/01-project-scope.md` | Project scope and assignment requirements |
-| `docs/02-network-architecture.md` | Multi-site architecture and device roles |
-| `docs/03-ip-vlan-plan.md` | VLAN, IPv4 VLSM, and IPv6 addressing |
-| `docs/04-routing-wan-plan.md` | OSPF, BGP, WAN, overlay, and NAT |
-| `docs/05-implementation-roadmap.md` | Implementation phases and milestones |
-| `docs/06-design-decisions.md` | Design decisions, assumptions, and open issues |
+| `docs/project_scope.md` | Project scope and assignment requirements |
+| `docs/network_architecture.md` | Multi-site logical architecture |
+| `docs/design_decisions.md` | Design choices, assumptions and open issues |
+| `docs/01-project-scope.md` through `docs/06-design-decisions.md` | Original numbered design documents retained for traceability |
+| `topology/network_topology.drawio` | Editable logical topology diagram |
+| `topology/lab/enterprise_network.gns3` | Empty GNS3 project starter; appliances and links must be added |
+| `configs/` | Device-specific configuration templates (to be completed after interface mapping) |
+| `services/` | DHCP, DNS and NAT design notes |
+| `security/` | ACL, DHCP Snooping and DAI design notes |
+| `routing/` | OSPF, BGP and VPN design notes |
+| `qos/README.md` | QoS design and validation notes |
+| `automation/main.py` | SSH backup and optional VLAN baseline automation |
+| `automation/inventory.yaml` | Example device inventory; devices disabled by default |
+| `automation/requirements.txt` | Python dependencies |
+| `tests/` | Connectivity, routing, security and QoS test plans |
+| `evidence/` | Directories for genuine lab evidence |
 
-## 5. Design Baseline
-
-The proposed design includes:
-
-- Three enterprise sites: HCMC, Hanoi, and Da Nang.
-- A hierarchical campus network architecture.
-- A Spine-and-Leaf fabric for the HCMC Data Center.
-- VLAN-based segmentation for enterprise departments and services.
+## 3. Design Baseline
+- Three sites: HCMC, Hanoi and Da Nang.
 - IPv4 VLSM and IPv6 Dual-Stack.
-- EtherChannel using LACP.
-- Rapid PVST+ or MSTP for Layer 2 loop prevention.
-- HSRP or VRRP for default gateway redundancy.
-- OSPF for internal routing.
-- BGP for inter-site and external routing.
-- EVPN-VXLAN or IPsec-based overlay connectivity.
-- Centralized DHCP at HCMC with DHCP relay at remote sites.
-- ACLs, Layer 2 security, and edge security policies.
-- NAT/PAT for external connectivity.
-- QoS for voice and other critical traffic.
-- Python or Ansible-based network automation.
+- VLAN segmentation, 802.1Q trunks, LACP and STP.
+- HSRP or VRRP where supported.
+- OSPF for internal routing and BGP for ISP/overlay routing.
+- Central DHCP/DNS at HCMC with DHCP relay at branches.
+- ACLs, Layer 2 security, NAT/PAT and QoS.
+- Spine-and-Leaf EVPN-VXLAN and SD-WAN as design targets subject to image/platform support.
 
-The exact topology, device models, interface assignments, and
-address allocations must be finalized during implementation.
+Proposed site IPv4 blocks are HCMC `10.10.0.0/16`, Hanoi `10.20.0.0/16`, Da Nang `10.30.0.0/16`, and WAN transit `10.255.0.0/16`. Final VLSM must use actual endpoint counts; do not assume every VLAN is a /24. `203.0.113.0/24` and `2001:db8::/32` are documentation ranges, not production allocations.
 
-## 6. Automation
+## 4. Automation
 
-The automation component will use Python with Netmiko/NAPALM
-or Ansible.
+From the `automation/` directory:
 
-The automation implementation should support:
+1. Install dependencies with `python -m pip install -r requirements.txt`.
+2. Edit `inventory.yaml` with actual management IPs and supported Netmiko device types.
+3. Confirm SSH access and set `enabled: true` only for devices intentionally included.
+4. Run `python main.py` to collect timestamped running-config and interface-status backups.
+5. Run `python main.py --apply-vlans` only after reviewing the inventory and VLAN policy. The script backs up before and after configuration by default.
 
-- Externalized device inventory.
-- Secure credential handling.
-- Baseline configuration deployment.
-- VLAN provisioning.
-- Configuration backup.
-- Execution logging.
-- Error handling.
-- Idempotent execution where supported.
+Credentials are prompted interactively or read from `TVI_NET_USERNAME` and `TVI_NET_PASSWORD`; never commit credentials. Test against a lab device before using this script on any shared environment.
 
-Credentials and private keys must never be committed to the repository.
+## 5. Lab Platform
+The assignment identifies EVE-NG, GNS3 or CML as primary platforms. The GNS3 file in this repository is only an empty starter project: add compatible appliances and links before opening the lab. Device images are not included.
 
-## 7. Project Status
+Verify OSPFv3, BGP/EVPN, IPsec, HSRP/VRRP, LACP, security features, QoS and SSH automation against the selected images.
 
-**Status:** Design and planning.
+## 6. Status and Evidence
+The repository contains design documentation, test plans and starter automation. It does not imply that network services, routing, security policies, QoS or WAN overlays have already been deployed.
 
-The documents in this repository describe the proposed design.
-They do not automatically indicate that the corresponding
-network features have already been implemented.
-
-Use the following status definitions:
-
-- Planned: included in the design but not configured.
+Use these statuses:
+- Planned: design exists, not configured.
 - In Progress: configuration or testing has started.
-- Verified: configured and passed the required tests.
-- Deferred: postponed with a documented reason.
-- Not Supported: confirmed unavailable on the selected platform.
+- Verified: implemented and passed tests with evidence.
+- Deferred: postponed with reason.
+- Not Supported: unavailable on the selected platform.
 
-## 8. Important Notes
-
-- Confirm the selected lab platform before building the topology.
-- Do not use Packet Tracer without the required instructor approval.
-- Do not use fixed-size IPv4 subnets without considering VLSM.
-- Keep IPv4 and IPv6 addressing plans consistent.
-- Verify device and protocol support before implementation.
-- Capture genuine configuration and test evidence.
-- Do not report simulated or planned capabilities as production-ready.
+Store actual outputs and screenshots under `evidence/`. Never fabricate test results or claim production capabilities from a small virtual lab.

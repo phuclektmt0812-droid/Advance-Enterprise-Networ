@@ -1,0 +1,56 @@
+graph TVI {
+graph [rankdir=TB, bgcolor=white, pad=0.4, splines=polyline];
+node [shape=box, style="rounded,filled", fillcolor="#EAF0F7", fontname="DejaVu Sans"];
+edge [color="#718096", fontname="DejaVu Sans", fontsize=9];
+"ISP-A" [fillcolor="#FFF0C7"]; "ISP-B" [fillcolor="#FFF0C7"];
+"ISP-A" -- "ISP-B" [label="eBGP"];
+"INTERNET-TEST" -- "ISP-A";
+subgraph cluster_hcmc {
+label="Ho Chi Minh City HQ";
+style="rounded"; color="#94A3B8";
+"HCMC-R1" [fillcolor="#D8E7FC"];
+"HCMC-SW1" [fillcolor="#DCF4E6"];
+"HCMC-R1" -- "HCMC-SW1" [label="trunk"];
+"HCMC-R2" [fillcolor="#D8E7FC"];
+"HCMC-SW2" [fillcolor="#DCF4E6"];
+"HCMC-R2" -- "HCMC-SW2" [label="trunk"];
+"HCMC-R1" -- "HCMC-R2" [label="OSPF/iBGP"];
+"HCMC-SW1" -- "HCMC-SW2" [label="LACP x2"];
+}
+"HCMC-R1" -- "ISP-A";
+"HCMC-R2" -- "ISP-B";
+subgraph cluster_hanoi {
+label="Hanoi Research Campus";
+style="rounded"; color="#94A3B8";
+"HANOI-R1" [fillcolor="#D8E7FC"];
+"HANOI-SW1" [fillcolor="#DCF4E6"];
+"HANOI-R1" -- "HANOI-SW1" [label="trunk"];
+"HANOI-R2" [fillcolor="#D8E7FC"];
+"HANOI-SW2" [fillcolor="#DCF4E6"];
+"HANOI-R2" -- "HANOI-SW2" [label="trunk"];
+"HANOI-R1" -- "HANOI-R2" [label="OSPF/iBGP"];
+"HANOI-SW1" -- "HANOI-SW2" [label="LACP x2"];
+}
+"HANOI-R1" -- "ISP-A";
+"HANOI-R2" -- "ISP-B";
+subgraph cluster_danang {
+label="Da Nang Logistics Hub";
+style="rounded"; color="#94A3B8";
+"DANANG-R1" [fillcolor="#D8E7FC"];
+"DANANG-SW1" [fillcolor="#DCF4E6"];
+"DANANG-R1" -- "DANANG-SW1" [label="trunk"];
+"DANANG-R2" [fillcolor="#D8E7FC"];
+"DANANG-SW2" [fillcolor="#DCF4E6"];
+"DANANG-R2" -- "DANANG-SW2" [label="trunk"];
+"DANANG-R1" -- "DANANG-R2" [label="OSPF/iBGP"];
+"DANANG-SW1" -- "DANANG-SW2" [label="LACP x2"];
+}
+"DANANG-R1" -- "ISP-A";
+"DANANG-R2" -- "ISP-B";
+"HCMC-R1" -- "HANOI-R1" [style=dashed, color=purple, label="IPsec GRE"];
+"HCMC-R2" -- "HANOI-R2" [style=dashed, color=purple, label="IPsec GRE"];
+"HCMC-R1" -- "DANANG-R1" [style=dashed, color=purple, label="IPsec GRE"];
+"HCMC-R2" -- "DANANG-R2" [style=dashed, color=purple, label="IPsec GRE"];
+"HQ-DHCP-DNS" -- "HCMC-SW1";
+"AUTOMATION" -- "HCMC-SW1";
+}

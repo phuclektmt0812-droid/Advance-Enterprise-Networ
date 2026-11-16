@@ -1,0 +1,32 @@
+Node A,Interface A,Node B,Interface B,Description
+HCMC-R1,GigabitEthernet0/0,HCMC-SW1,GigabitEthernet0/0,802.1Q trunk
+HCMC-R1,GigabitEthernet0/1,ISP-A,GigabitEthernet0/0,ISP physical uplink
+HCMC-R2,GigabitEthernet0/0,HCMC-SW2,GigabitEthernet0/0,802.1Q trunk
+HCMC-R2,GigabitEthernet0/1,ISP-B,GigabitEthernet0/0,ISP physical uplink
+HCMC-R1,GigabitEthernet0/2,HCMC-R2,GigabitEthernet0/2,OSPF + iBGP transit
+HCMC-SW1,GigabitEthernet0/1,HCMC-SW2,GigabitEthernet0/1,LACP Port-channel1
+HCMC-SW1,GigabitEthernet0/2,HCMC-SW2,GigabitEthernet0/2,LACP Port-channel1
+HCMC-SW1,GigabitEthernet0/3,HCMC-CORP-CLIENT,eth0,Site corporate client
+HCMC-SW2,GigabitEthernet0/3,HCMC-GUEST-CLIENT,eth0,Guest client
+HANOI-R1,GigabitEthernet0/0,HANOI-SW1,GigabitEthernet0/0,802.1Q trunk
+HANOI-R1,GigabitEthernet0/1,ISP-A,GigabitEthernet0/1,ISP physical uplink
+HANOI-R2,GigabitEthernet0/0,HANOI-SW2,GigabitEthernet0/0,802.1Q trunk
+HANOI-R2,GigabitEthernet0/1,ISP-B,GigabitEthernet0/1,ISP physical uplink
+HANOI-R1,GigabitEthernet0/2,HANOI-R2,GigabitEthernet0/2,OSPF + iBGP transit
+HANOI-SW1,GigabitEthernet0/1,HANOI-SW2,GigabitEthernet0/1,LACP Port-channel1
+HANOI-SW1,GigabitEthernet0/2,HANOI-SW2,GigabitEthernet0/2,LACP Port-channel1
+HANOI-SW1,GigabitEthernet0/3,HANOI-CORP-CLIENT,eth0,Site corporate client
+HANOI-SW2,GigabitEthernet0/3,HANOI-GUEST-CLIENT,eth0,Guest client
+DANANG-R1,GigabitEthernet0/0,DANANG-SW1,GigabitEthernet0/0,802.1Q trunk
+DANANG-R1,GigabitEthernet0/1,ISP-A,GigabitEthernet0/2,ISP physical uplink
+DANANG-R2,GigabitEthernet0/0,DANANG-SW2,GigabitEthernet0/0,802.1Q trunk
+DANANG-R2,GigabitEthernet0/1,ISP-B,GigabitEthernet0/2,ISP physical uplink
+DANANG-R1,GigabitEthernet0/2,DANANG-R2,GigabitEthernet0/2,OSPF + iBGP transit
+DANANG-SW1,GigabitEthernet0/1,DANANG-SW2,GigabitEthernet0/1,LACP Port-channel1
+DANANG-SW1,GigabitEthernet0/2,DANANG-SW2,GigabitEthernet0/2,LACP Port-channel1
+DANANG-SW1,GigabitEthernet0/3,DANANG-CORP-CLIENT,eth0,Site corporate client
+DANANG-SW2,GigabitEthernet0/3,DANANG-GUEST-CLIENT,eth0,Guest client
+HCMC-SW1,GigabitEthernet0/4,HQ-DHCP-DNS,eth0,HQ centralized DHCP/DNS
+HCMC-SW1,GigabitEthernet0/5,AUTOMATION,eth0,Netmiko control host
+ISP-A,GigabitEthernet0/3,ISP-B,GigabitEthernet0/3,Provider interconnect
+ISP-A,GigabitEthernet0/4,INTERNET-TEST,eth0,Simulated web/DNS server

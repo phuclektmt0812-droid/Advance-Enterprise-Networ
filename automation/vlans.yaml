@@ -1,10 +1,21 @@
 vlans:
-  10: EXEC_FINANCE
-  20: ENGINEERING
-  30: LOGISTICS
-  50: GUEST
-  60: SERVICES
-  70: IOT
-  80: VOICE
-  99: MANAGEMENT
-  999: BLACKHOLE
+  - id: 10
+    name: EXEC_FINANCE
+  - id: 20
+    name: ENGINEERING
+  - id: 30
+    name: LOGISTICS
+  - id: 50
+    name: GUEST
+  - id: 60
+    name: SERVICES
+  - id: 70
+    name: IOT
+  - id: 80
+    name: VOICE
+  - id: 99
+    name: MANAGEMENT
+  - id: 999
+    name: BLACKHOLE
+  - id: 140
+    name: DEMO_AUDIT

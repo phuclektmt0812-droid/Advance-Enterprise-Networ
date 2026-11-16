@@ -1,0 +1,84 @@
+project: TVI Enterprise Network - GNS3/EVE-NG teaching lab
+note: Illustrative documentation-only WAN/IPv6 addressing. Not public Internet IP space.
+site_defaults:
+  vlans:
+    10: EXEC_FINANCE
+    20: ENGINEERING
+    30: LOGISTICS
+    50: GUEST
+    70: IOT
+    80: VOICE
+    99: MANAGEMENT
+    999: BLACKHOLE
+sites:
+  hcmc:
+    label: Ho Chi Minh City HQ
+    asn: 65010
+    base: '10.10'
+    ipv6_site: 10
+    ospf_id: 10
+    vlans:
+      10: 10.10.8.0/22
+      20: 10.10.16.0/22
+      30: 10.10.32.0/24
+      50: 10.10.50.0/24
+      60: 10.10.60.0/24
+      70: 10.10.64.0/22
+      80: 10.10.80.0/24
+      99: 10.10.99.0/24
+    transit: 10.10.254.0/30
+    loopbacks: [10.10.250.1/32, 10.10.250.2/32]
+  hanoi:
+    label: Hanoi Research Campus
+    asn: 65020
+    base: '10.20'
+    ipv6_site: 20
+    ospf_id: 20
+    vlans:
+      10: 10.20.8.0/23
+      20: 10.20.16.0/21
+      30: 10.20.32.0/24
+      50: 10.20.50.0/24
+      70: 10.20.64.0/22
+      80: 10.20.80.0/24
+      99: 10.20.99.0/24
+    transit: 10.20.254.0/30
+    loopbacks: [10.20.250.1/32, 10.20.250.2/32]
+  danang:
+    label: Da Nang Logistics Hub
+    asn: 65030
+    base: '10.30'
+    ipv6_site: 30
+    ospf_id: 30
+    vlans:
+      10: 10.30.8.0/24
+      20: 10.30.16.0/24
+      30: 10.30.32.0/22
+      50: 10.30.50.0/24
+      70: 10.30.128.0/18
+      80: 10.30.80.0/24
+      99: 10.30.99.0/24
+    transit: 10.30.254.0/30
+    loopbacks: [10.30.250.1/32, 10.30.250.2/32]
+wan:
+  ispa_as: 64501
+  ispb_as: 64502
+  isp_interconnect: 192.0.2.0/30
+  internet_test_link: 192.0.2.16/30
+  links:
+    hcmc-r1: {network: 198.51.100.0/30, provider: ISP-A, isp_ip: 198.51.100.1, router_ip: 198.51.100.2, isp_port: GigabitEthernet0/0}
+    hanoi-r1: {network: 198.51.100.4/30, provider: ISP-A, isp_ip: 198.51.100.5, router_ip: 198.51.100.6, isp_port: GigabitEthernet0/1}
+    danang-r1: {network: 198.51.100.8/30, provider: ISP-A, isp_ip: 198.51.100.9, router_ip: 198.51.100.10, isp_port: GigabitEthernet0/2}
+    hcmc-r2: {network: 203.0.113.0/30, provider: ISP-B, isp_ip: 203.0.113.1, router_ip: 203.0.113.2, isp_port: GigabitEthernet0/0}
+    hanoi-r2: {network: 203.0.113.4/30, provider: ISP-B, isp_ip: 203.0.113.5, router_ip: 203.0.113.6, isp_port: GigabitEthernet0/1}
+    danang-r2: {network: 203.0.113.8/30, provider: ISP-B, isp_ip: 203.0.113.9, router_ip: 203.0.113.10, isp_port: GigabitEthernet0/2}
+  tunnels:
+    - {name: HQ-HANOI-A, id: 10, a: hcmc-r1, b: hanoi-r1, subnet: 172.31.10.0/30, ipv6: '2001:db8:ff:10::/64'}
+    - {name: HQ-HANOI-B, id: 11, a: hcmc-r2, b: hanoi-r2, subnet: 172.31.10.4/30, ipv6: '2001:db8:ff:11::/64'}
+    - {name: HQ-DANANG-A, id: 20, a: hcmc-r1, b: danang-r1, subnet: 172.31.20.0/30, ipv6: '2001:db8:ff:20::/64'}
+    - {name: HQ-DANANG-B, id: 21, a: hcmc-r2, b: danang-r2, subnet: 172.31.20.4/30, ipv6: '2001:db8:ff:21::/64'}
+services:
+  dns_dhcp: 10.10.60.10
+  iot_app: 10.10.60.20
+  automation: 10.10.99.50
+  internet_test: 192.0.2.18

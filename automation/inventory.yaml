@@ -1,0 +1,19 @@
+# Add only devices that are reachable over SSH from the automation host.
+# Keep credentials out of this file. Use TVI_NET_USERNAME / TVI_NET_PASSWORD
+# environment variables or enter them interactively when the script runs.
+devices:
+  - name: SW-HQ-Core
+    host: 10.10.99.2
+    port: 22
+    device_type: cisco_ios
+    enabled: false
+  - name: SW-HQ-A1
+    host: 10.10.99.3
+    port: 22
+    device_type: cisco_ios
+    enabled: false
+  - name: SW-HQ-A2
+    host: 10.10.99.4
+    port: 22
+    device_type: cisco_ios
+    enabled: false

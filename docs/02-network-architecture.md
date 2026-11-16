@@ -1,160 +1,274 @@
+
 # 02 -- Network Architecture
 
-## 1. High-Level Design
+## 1. Architecture Overview
 
-The enterprise network contains one headquarters, two branches, and one
-ISP simulation.
+The proposed TVI network connects three geographical sites:
 
-``` text
-                         +----------------+
-                         |   ISP Router   |
-                         |    AS 65000    |
-                         +--------+-------+
-                                  |
-                              eBGP / WAN
-                                  |
-                         +--------+-------+
-                         |   R-HQ (Edge)  |
-                         +--------+-------+
-                                  |
-                         Transit Ethernet
-                                  |
-                         +--------+-------+
-                         |   SW-HQ-Core   |
-                         | Layer 3 Switch |
-                         +---+--------+---+
-                             |        |
-                       Trunk |        | Trunk
-                             |        |
-                       +-----+--+  +--+------+
-                       |SW-HQ-A1|  |SW-HQ-A2 |
-                       +--------+  +---------+
-                             |
-                     HQ user/server VLANs
+- HCMC Headquarters and Data Center.
+- Hanoi R&D and Engineering Campus.
+- Da Nang Logistics and Distribution Hub.
 
-          OSPF point-to-point WAN links from R-HQ:
-                   /                         \
-                  /                           \
-          +------+-----+                 +-----+------+
-          |    R-HN     |                 |    R-DN     |
-          +------+-----+                 +-----+------+
-                 |                             |
-              Trunks                        Trunk
-                 |                             |
-          +------+-----+                 +-----+------+
-          | Branch LAN |                 | Branch LAN |
-          | 2 x L2 SW  |                 | 1 x L2 SW  |
-          +------------+                 +------------+
-```
+The architecture separates the campus LAN, data center fabric, WAN underlay, WAN overlay, and external connectivity.
 
-The diagram is logical. Physical interface numbers and exact cable types
-will be recorded after devices are placed in Packet Tracer.
+The design must provide scalability, redundancy, traffic isolation, and centralized network services.
 
-## 2. Device Roles
+## 2. Logical Architecture
 
-  ---------------------------------------------------------------------------
-  Site             Device role                   Quantity Responsibility
-  ---------------- ---------------- --------------------- -------------------
-  HCMC             Edge router                          1 WAN, OSPF, eBGP,
-                                                          NAT/PAT
+                         +----------------------+
+                         |       Internet       |
+                         |      ISP Network     |
+                         +----------+-----------+
+                                    |
+                              eBGP / WAN Edge
+                                    |
+                +-------------------+-------------------+
+                |                                       |
+         +------+-------+                        WAN / SD-WAN
+         | HCMC HQ Edge |                       Connectivity
+         | Router / NGFW|                                |
+         +------+-------+                 +--------------+--------------+
+                |                         |              |              |
+          HQ Core / Campus               |              |              |
+                |                  +------+-----+  +-----+--------+
+        +-------+--------+         | Hanoi R&D  |  | Da Nang Hub |
+        |                |         | Campus     |  | Logistics   |
+   Campus LAN       Data Center    +------------+  +-------------+
+        |                |
+   User VLANs       Spine-and-Leaf
+                    EVPN-VXLAN Fabric
 
-  HCMC             Layer 3 core                         1 HQ VLAN gateways
-                   switch                                 and inter-VLAN
-                                                          routing
+This is a logical architecture, not a final physical topology.
 
-  HCMC             Layer 2 access                       2 End-device access
-                   switch                                 and VLAN trunking
+The physical topology must identify:
 
-  HCMC             Server                          1 or 2 DHCP and DNS
+- Device hostnames.
+- Device models and images.
+- Interface identifiers.
+- Link types and speeds.
+- VLAN IDs.
+- IPv4 and IPv6 subnets.
+- Layer 2 and Layer 3 boundaries.
+- Trust zones.
+- Redundant paths.
 
-  Hanoi            Branch router                        1 WAN routing and
-                                                          router-on-a-stick
+## 3. Site Roles
 
-  Hanoi            Layer 2 access                       2 User access
-                   switch                                 
+### 3.1 HCMC Headquarters
 
-  Da Nang          Branch router                        1 WAN routing and
-                                                          router-on-a-stick
+HCMC is the central enterprise site.
 
-  Da Nang          Layer 2 access                       1 User access
-                   switch                                 
+Responsibilities:
 
-  ISP              ISP router                           1 External routing
-                                                          simulation
-  ---------------------------------------------------------------------------
+- Headquarters campus connectivity.
+- Data Center connectivity.
+- Centralized DHCP and DNS services.
+- WAN edge connectivity.
+- Internet access and NAT/PAT.
+- Enterprise routing and route distribution.
+- Security policy enforcement.
+- Management and automation services.
 
-Candidate models include Cisco 2911 routers, Catalyst 3560 Layer 3
-switches, and Catalyst 2960 Layer 2 switches. These are candidates, not
-a final interface-level commitment. Confirm availability and feature
-support in the installed Packet Tracer version.
+The Data Center should use a Spine-and-Leaf architecture with EVPN-VXLAN as the target fabric technology.
 
-## 3. Layer 2 and Layer 3 Design
+### 3.2 Hanoi R&D and Engineering Campus
 
-### HCMC HQ
+Responsibilities:
 
--   The Layer 3 core switch hosts SVIs for VLANs 10, 20, 30, 40, and 99.
--   The two access switches connect to the core using 802.1Q trunks.
--   The core switch connects to the HQ edge router through a dedicated
-    routed transit subnet.
--   The DHCP/DNS server uses a static address in VLAN 40.
+- Engineering user connectivity.
+- High-bandwidth compute and AI lab connectivity.
+- Secure access to Data Center and private cloud services.
+- East-west traffic optimization.
+- Local VLAN and gateway services.
+- WAN connectivity to HCMC and other sites.
 
-### Hanoi
+### 3.3 Da Nang Logistics and Distribution Hub
 
--   The branch router provides default gateways using 802.1Q
-    subinterfaces.
--   The two access switches provide user access ports and trunk
-    connectivity.
--   VLANs 10, 20, 30, and 99 are planned.
+Responsibilities:
 
-### Da Nang
+- Logistics and warehouse user connectivity.
+- IoT tracking and automation endpoints.
+- Low-latency access to required services.
+- Segmentation of IoT and Corporate traffic.
+- Local VLAN and gateway services.
+- WAN connectivity to HCMC and other sites.
 
--   The branch router provides default gateways using 802.1Q
-    subinterfaces.
--   The access switch provides user access ports and a trunk to the
-    router.
--   VLANs 10, 20, 30, and 99 are planned.
+## 4. Data Center Architecture
 
-## 4. Routing Design
+The HCMC Data Center is designed around a Spine-and-Leaf fabric.
 
--   OSPF Area 0 is used for internal enterprise routing.
--   OSPF runs between the HQ edge router, HQ core switch, and branch
-    routers.
--   eBGP runs between the HQ edge router (AS 65010) and ISP router (AS
-    65000).
--   The HQ edge router is the enterprise exit point toward the simulated
-    ISP.
--   A default route from the ISP side is intended to be propagated into
-    the enterprise OSPF domain, subject to the final routing
-    configuration.
+### Spine Layer
 
-## 5. Centralized Services
+- Provides Layer 3 connectivity between Spine and Leaf switches.
+- Supports scalable east-west traffic.
+- Provides the underlay transport for the overlay.
 
-The DHCP/DNS server is located at HCMC HQ.
+### Leaf Layer
 
--   DHCP scopes are created for each client VLAN.
--   Remote VLANs use DHCP relay on their Layer 3 gateway.
--   DNS records are configured on the central server.
--   Branches must have routed reachability to the server subnet.
+- Connects servers and service endpoints.
+- Provides access into the Data Center fabric.
+- Participates in EVPN-VXLAN overlay connectivity.
 
-## 6. Security Zones
+### Overlay
 
--   **Corporate (VLAN 10):** internal employee devices.
--   **Guest (VLAN 20):** restricted access; should not initiate
-    connections to Corporate or Management networks.
--   **IoT (VLAN 30):** restricted access to only required services.
--   **Server (VLAN 40):** centrally hosted services at HQ.
--   **Management (VLAN 99):** device management traffic.
+EVPN-VXLAN is the target technology for scalable Layer 2 over Layer 3 connectivity.
 
-ACL policy details will be documented before implementation. Do not
-apply an ACL until required permitted services and management access
-have been identified.
+MP-BGP may be used to distribute EVPN routes.
 
-## 7. Design Limitations and Open Items
+The exact device images and feature support must be verified before implementation.
 
--   The initial logical WAN design uses point-to-point links between HQ
-    and branches. This is not, by itself, an IPsec VPN. If the
-    assignment requires site-to-site VPN, the WAN design must be
-    extended and verified against Packet Tracer support.
--   Physical redundancy and HSRP are not included in the first baseline.
--   QoS, DHCP Snooping, and DAI depend on the selected Packet Tracer
-    device models and supported commands.
+## 5. Campus LAN Architecture
+
+The campus LAN uses a hierarchical design.
+
+The logical layers are:
+
+1. Core/Distribution: Layer 3 routing and gateway services.
+2. Access: End-device connectivity and VLAN assignment.
+
+The design includes:
+
+- VLAN segmentation.
+- 802.1Q trunk links.
+- EtherChannel using LACP.
+- Rapid PVST+ or MSTP.
+- Explicit STP root bridge selection.
+- Unused-port isolation using VLAN 999.
+- HSRP or VRRP for default gateway redundancy.
+
+The final topology must include redundant links and avoid unnecessary Layer 2 loops.
+
+## 6. Layer 2 and Layer 3 Responsibilities
+
+### Layer 2
+
+Layer 2 switching provides:
+
+- VLAN creation and assignment.
+- Access port configuration.
+- 802.1Q trunking.
+- EtherChannel/LACP.
+- STP loop prevention.
+- Port Security.
+- DHCP Snooping.
+- Dynamic ARP Inspection.
+
+### Layer 3
+
+Layer 3 devices provide:
+
+- Inter-VLAN routing.
+- Default gateway redundancy.
+- OSPF underlay routing.
+- BGP overlay and external routing.
+- WAN connectivity.
+- Route filtering and summarization.
+- DHCP relay.
+
+## 7. Routing Architecture
+
+The routing design separates underlay and overlay functions.
+
+### Underlay
+
+OSPF provides internal IP reachability across the enterprise routing infrastructure.
+
+OSPFv3 is required for IPv6 routing.
+
+### Overlay and WAN
+
+BGP is used for inter-site and external routing.
+
+The design should evaluate:
+
+- eBGP with ISP networks.
+- iBGP or MP-BGP for enterprise route distribution.
+- EVPN for the Data Center overlay.
+- IPsec tunnels where required for site-to-site encryption.
+- SD-WAN concepts for path selection and direct cloud access.
+
+The exact routing topology depends on the selected lab platform and supported device images.
+
+## 8. High Availability
+
+The design must reduce single points of failure.
+
+Required mechanisms include:
+
+- HSRP or VRRP for gateway redundancy.
+- EtherChannel using LACP for core links.
+- STP root bridge enforcement.
+- Redundant Layer 3 paths where supported.
+- Redundant WAN paths where supported.
+
+Failover behavior must be demonstrated by shutting down a primary link or gateway and observing network convergence.
+
+## 9. Centralized Network Services
+
+Centralized DHCP services are located at HCMC HQ.
+
+The design includes:
+
+- DHCP scopes for client VLANs.
+- DHCP relay at remote Layer 3 gateways.
+- Centralized DNS services.
+- Reachability from branches to central services.
+
+The final server IP addresses must match the approved IPv4 and IPv6 addressing plan.
+
+## 10. Security Zones
+
+The network separates traffic into security zones.
+
+| Zone | Purpose | Security Requirement |
+|---|---|---|
+| Executive | Executive and Finance devices | Strict access control |
+| Engineering | R&D and Engineering devices | Controlled access to compute resources |
+| Logistics | Logistics and warehouse operations | Controlled access to required services |
+| Server | Enterprise services and applications | Restricted inbound access |
+| IoT | Tracking and automation endpoints | Allow only required services |
+| Guest | Visitors and guest devices | Internet-only access |
+| Voice | IP phones and voice services | QoS and restricted access |
+| Management | Network device management | Administrative access only |
+
+ACLs and firewall policies must enforce the required isolation.
+
+Guest devices must not access Corporate or Management resources.
+
+IoT devices must only communicate with explicitly permitted services.
+
+## 11. Wireless Architecture
+
+The design should include Wireless LAN Controller (WLC) integration with CAPWAP.
+
+Wireless access should support the relevant user groups and traffic segmentation.
+
+The implementation must document the wireless controller, access point, VLAN, and management relationships.
+
+Wi-Fi 6/7 capabilities are design targets and must not be claimed as implemented unless the selected lab platform supports them.
+
+## 12. Remote Access and Cloud Connectivity
+
+The architecture adopts ZTNA and SASE principles for remote users.
+
+The design should consider:
+
+- Identity-based access.
+- Least-privilege authorization.
+- Encrypted connections.
+- Secure access to internal applications.
+- Direct cloud access from branch locations where appropriate.
+
+Commercial SASE integration is outside the scope of a basic virtual lab unless explicitly available.
+
+## 13. Design Limitations and Open Items
+
+- Confirm the selected lab platform and device images.
+- Confirm EVPN-VXLAN and MP-BGP support.
+- Confirm HSRP/VRRP and LACP support.
+- Confirm IPv6 and OSPFv3 support.
+- Confirm IPsec and QoS support.
+- Finalize physical interface assignments.
+- Finalize device quantities and redundant paths.
+
+All limitations must be documented in the final report.

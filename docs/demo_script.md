@@ -1,5 +1,14 @@
 # 15-minute TVI Live Demonstration — Presenter Script
 
+## Presenter preflight
+
+Before the live demonstration, install the Python dependencies and run
+`python -m pytest -v` from the repository root. This is a local mocked test
+and does not require GNS3. For the network demonstration, separately boot
+the core GNS3/EVE-NG topology, load the device configurations, and confirm
+SSH reachability to the management addresses. Do not run the live automation
+step against an unconfigured or stopped lab.
+
 | Time | Demonstrate | Recommended evidence |
 |---|---|---|
 | 0:00–1:30 | Company scenario, 3-site logical and physical Draw.io designs, VLAN security zones, redundancy | Logical + physical Draw.io topology, `ip_schema.csv`, `physical_topology.md` |

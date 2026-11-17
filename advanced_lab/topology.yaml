@@ -1,6 +1,7 @@
 project: TVI Advanced Enterprise Extension
 version: 1
 status: design_manifest_not_deployed
+
 addressing:
   core_reserved:
     - 10.10.0.0/16
@@ -37,47 +38,53 @@ addressing:
     - 10.40.250.12/32
     - 10.40.250.13/32
     - 10.40.250.14/32
-  evpn:
-    asn: 65140
-    spines: [SPINE1, SPINE2]
-    leaves: [LEAF1, LEAF2, LEAF3, LEAF4]
-    vnis:
-      - vlan: 110
-        name: CORP_APP
-        vni: 10110
-        subnet: 10.40.130.0/24
-      - vlan: 120
-        name: CORP_DB
-        vni: 10120
-        subnet: 10.40.140.0/24
-      - vlan: 150
-        name: GUEST
-        vni: 10150
-        subnet: 10.40.150.0/24
-  mpls:
-    provider_asn: 65141
-    customer_vrfs:
-      - name: TVI_ENTERPRISE
-        rd: 65141:100
-        rt: 65141:100
-        site_prefixes:
-          - 10.10.0.0/16
-          - 10.20.0.0/16
-          - 10.30.0.0/16
-  sdwan:
-    sites: [HCMC, HANOI, DANANG]
-    transports: [INET_A, INET_B]
-    policy_intent:
-      realtime_voice: prefer_low_latency
-      business_apps: prefer_primary
-      bulk_backup: prefer_low_cost
-  security:
-    zones: [TRUST, GUEST, DMZ, UNTRUST]
-    protected_application: 10.43.10.10
-  wireless:
-    management_subnet: 10.43.20.0/24
-    corporate_vlan: 110
-    guest_vlan: 150
+
+evpn:
+  asn: 65140
+  spines: [SPINE1, SPINE2]
+  leaves: [LEAF1, LEAF2, LEAF3, LEAF4]
+  vnis:
+    - vlan: 110
+      name: CORP_APP
+      vni: 10110
+      subnet: 10.40.130.0/24
+    - vlan: 120
+      name: CORP_DB
+      vni: 10120
+      subnet: 10.40.140.0/24
+    - vlan: 150
+      name: GUEST
+      vni: 10150
+      subnet: 10.40.150.0/24
+
+mpls:
+  provider_asn: 65141
+  customer_vrfs:
+    - name: TVI_ENTERPRISE
+      rd: 65141:100
+      rt: 65141:100
+      site_prefixes:
+        - 10.10.0.0/16
+        - 10.20.0.0/16
+        - 10.30.0.0/16
+
+sdwan:
+  sites: [HCMC, HANOI, DANANG]
+  transports: [INET_A, INET_B]
+  policy_intent:
+    realtime_voice: prefer_low_latency
+    business_apps: prefer_primary
+    bulk_backup: prefer_low_cost
+
+security:
+  zones: [TRUST, GUEST, DMZ, UNTRUST]
+  protected_application: 10.43.10.10
+
+wireless:
+  management_subnet: 10.43.20.0/24
+  corporate_vlan: 110
+  guest_vlan: 150
+
 platform_requirements:
   evpn_vxlan: "Arista vEOS-lab or equivalent BGP EVPN/VXLAN-capable image"
   mpls_l3vpn: "Cisco IOS-XE/CSR1000v or equivalent PE/P with MPLS, LDP, VRF and VPNv4"

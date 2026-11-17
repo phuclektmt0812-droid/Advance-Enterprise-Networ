@@ -71,3 +71,35 @@ for this branch has not yet been confirmed. Run
 or inspect the branch's Actions run before treating the static checks as PASS.
 
 No advanced feature has been validated on live vendor images or controllers.
+
+
+## Advance-GWork implementation additions — 17 November 2026
+
+Added implementation artifacts on the separate `Advance-GWork` branch:
+- `advanced_lab/configs/evpn_vxlan/DEVICE_CONFIGS.md`: two-spine/two-leaf
+  Arista EOS starter, routed OSPF underlay, MP-BGP EVPN route reflection,
+  Vxlan1 and VLAN-to-VNI mappings.
+- `advanced_lab/configs/mpls_l3vpn/DEVICE_CONFIGS.md`: IOS-XE PE/P examples,
+  OSPF underlay, LDP, VPNv4 MP-BGP and customer VRF/route-target plan.
+- `advanced_lab/configs/sdwan/IMPLEMENTATION_RUNBOOK.md`: controller,
+  onboarding, dual transport and application-aware policy workflow.
+- `advanced_lab/configs/security/NGFW_POLICY_BLUEPRINT.md`: zone model,
+  stateful allow/deny rules, logging and safe insertion order.
+- `advanced_lab/configs/ztna/OPENZITI_REFERENCE.md`: named private application,
+  identity/service policy and no broad subnet exposure.
+- `advanced_lab/configs/wireless/CISCO_9800_REFERENCE.txt`: WLC/AP join,
+  CAPWAP discovery, SSID-to-VLAN and guest isolation workflow.
+- `docs/config_templates/IOS_QOS_VOICE_VIDEO.txt`: documents the QoS policy
+  already emitted by the core generator and how to verify class counters.
+
+A new test file checks the presence and key configuration elements of these
+artifacts. The existing core generator and 14-device topology are unchanged.
+
+**Important limits:** The EVPN and MPLS files are platform-specific starter
+configurations and require licensed feature-capable images plus final interface
+mapping. SD-WAN requires a vendor controller/edge stack; NGFW requires a
+selected firewall appliance; ZTNA requires a controller/connector deployment;
+wireless requires a compatible WLC and lightweight AP. These artifacts are
+implementation-ready design/configuration references, not proof of a running
+advanced lab. 10/40-Gbps capacity and 99.99% availability measurements remain
+intentionally out of scope for this pass.

@@ -13,11 +13,18 @@ The GWork branch has since been extended with:
   NGFW, ZTNA/SASE and WLC/CAPWAP.
 - GitHub Actions static validation workflow.
 
-**Important:** these changes have not yet been rerun on the user's machine or on
-a live IOSv/IOSvL2 emulator. The earlier 22-test result applies to the earlier
-GWork revision, not automatically to the latest commits. Run the updated CI
-workflow or the local commands in README before treating this revision as
-static-test PASS.
+**Latest static CI — 17 November 2026, commit 9d40d380048dc04f7a6af3f102341a0b2da72f89: PASS.**
+GitHub Actions completed the following steps successfully:
+- python tools/validate_plan.py
+- python tools/build_lab.py (12 enterprise configs, 2 ISP configs, 4 GRE/IPsec tunnel pairs)
+- python -m pytest -q — **23 passed**
+- python -m compileall -q tools automation
+- bash -n server/prepare_hq_server.sh server/prepare_internet_server.sh
+
+Workflow evidence: https://github.com/phuclektmt0812-droid/Advance-Enterprise-Networ/actions/runs/44018635167
+
+This is static CI on Ubuntu, not a run on the user's Windows machine or on
+live IOSv/IOSvL2 devices. The emulator/runtime checks below remain pending.
 
 ## What was actually checked in this environment
 

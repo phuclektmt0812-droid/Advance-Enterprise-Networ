@@ -56,12 +56,12 @@ These are lab-only addresses; do not advertise them to a real ISP.
   CE handoff instructions are in `configs/mpls_l3vpn/`; confirm MPLS, LDP,
   VRF and VPNv4 support in the exact image.
 - SD-WAN: requires licensed SD-WAN edge and controller/orchestrator images.
-  Ordinary IOSv + GRE/IPsec is not controller-based SD-WAN.
+  Ordinary IOSv + GRE/IPsec is not controller-based SD-WAN. `configs/sdwan/DUAL_WAN_ROUTING_FALLBACK.md` provides a testable dual-WAN routing fallback, clearly distinguished from true SD-WAN.
 - NGFW: use the optional OPNsense lab guide for a practical stateful firewall
   + IDS demonstration, or a licensed commercial NGFW for vendor-specific
   NGFW features.
-- ZTNA/SASE: requires identity, connector/broker and private application.
-- Wireless: requires a WLC and lightweight AP images that support CAPWAP.
+- ZTNA: a PowerShell bootstrap script prepares the official OpenZiti Docker Compose quickstart under `deploy/ztna/`; use it for a named private-service lab.
+- Wireless: `configs/wireless/C9800_CLI_TEMPLATE.txt` provides the WLAN/policy-profile/policy-tag CLI sequence; a compatible WLC and lightweight AP are still required.
 
 No vendor images, controller licenses, credentials, or secrets are stored here.
 

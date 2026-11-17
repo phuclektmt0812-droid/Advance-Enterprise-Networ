@@ -2,6 +2,33 @@
 
 **Meaning of status:** `STATIC CHECK` means verified by Python/tests only. `LAB REQUIRED` means a real IOSv/IOSvL2 GNS3/EVE-NG implementation must be operating first. **No lab-required test is represented as having passed yet.** All commands below assume Cisco IOSv/IOSvL2 CLI; equivalent CLI may differ by image/version.
 
+## Running the test plan
+
+From the repository root with the project's virtual environment active:
+
+```powershell
+python -m pytest -v
+```
+
+This runs the full self-contained test suite. The Netmiko tests use a fake
+connection object; no GNS3 project, Cisco image, SSH server or device
+credentials are needed for this command.
+
+The live cases below are a separate phase. Before A01-A04, start the GNS3/EVE-NG
+nodes, load their bootstrap configurations, confirm that the automation host
+has a route to each management subnet, and confirm TCP/22 is reachable. For
+example, from Windows PowerShell:
+
+```powershell
+Test-NetConnection 10.10.99.11 -Port 22
+```
+
+Proceed only when `TcpTestSucceeded` is `True`. A
+`NetmikoTimeoutException: TCP connection to device failed` means the SSH
+endpoint is not reachable; it is not an authentication/password failure.
+If the emulator has not been configured or its devices are stopped, this
+failure is expected and the live automation cases remain **NOT TESTED**.
+
 ## A. Automated local tests
 
 | ID | Type | Procedure | Expected output |

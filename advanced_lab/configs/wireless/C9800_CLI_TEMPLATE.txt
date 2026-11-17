@@ -1,0 +1,71 @@
+TVI CATALYST 9800 — WLAN / POLICY PROFILE / POLICY TAG TEMPLATE
+=================================================================
+
+Platform: Cisco Catalyst 9800 IOS XE. Validate commands against the exact
+controller release before applying. This file is a template; replace every
+placeholder and use a console/management session with rollback access.
+
+DESIGN
+------
+WLAN profile TVI-CORP (WLAN ID 110) -> policy profile TVI-CORP-POLICY -> VLAN 110
+WLAN profile TVI-GUEST (WLAN ID 150) -> policy profile TVI-GUEST-POLICY -> VLAN 150
+Both mappings are placed in policy tag TVI-SITE-POLICY.
+
+REQUIRED PREPARATION
+--------------------
+- Create VLAN 110 and VLAN 150 on the wired switching path.
+- Ensure the WLC client-data switching model (central or Flex/local) matches
+  the switch trunk and DHCP design.
+- Configure RADIUS/AAA for corporate 802.1X using the actual server address.
+- Configure guest authentication/captive portal separately; do not leave a
+  production guest SSID unauthenticated.
+- Keep WLC management reachable only from the management network.
+- Never commit PSKs, RADIUS secrets, private keys or certificates.
+
+ILLUSTRATIVE CLI SHAPE
+----------------------
+! Corporate WLAN profile; add release-specific WPA2/WPA3-Enterprise AAA
+! settings and verify the RADIUS method list before enabling.
+wlan TVI-CORP 110 TVI-CORP
+ no shutdown
+!
+! Guest WLAN profile; add the selected guest authentication/web-auth policy.
+wlan TVI-GUEST 150 TVI-GUEST
+ no shutdown
+!
+wireless profile policy TVI-CORP-POLICY
+ vlan 110
+ no shutdown
+!
+wireless profile policy TVI-GUEST-POLICY
+ vlan 150
+ no shutdown
+!
+wireless tag policy TVI-SITE-POLICY
+ wlan TVI-CORP policy TVI-CORP-POLICY
+ wlan TVI-GUEST policy TVI-GUEST-POLICY
+!
+! Apply only after the AP has joined and its Ethernet MAC is known.
+ap <AP_ETHERNET_MAC>
+ policy-tag TVI-SITE-POLICY
+!
+end
+write memory
+
+VALIDATION
+----------
+show wlan summary
+show wireless tag policy detailed TVI-SITE-POLICY
+show wireless profile policy detailed TVI-CORP-POLICY
+show wireless profile policy detailed TVI-GUEST-POLICY
+show ap summary
+show wireless client summary
+show wireless stats ap join
+
+Confirm corporate clients land in VLAN 110, guest clients land in VLAN 150,
+and wired ACL/firewall policy blocks guest access to protected corporate
+services. The policy tag maps WLAN profiles to policy profiles; it does not
+by itself create VLANs, DHCP scopes, RADIUS servers or firewall rules.
+
+Official configuration model:
+https://www.cisco.com/c/en/us/support/docs/wireless/catalyst-9800-series-wireless-controllers/213911-understand-catalyst-9800-wireless-contro.html

@@ -55,3 +55,19 @@ live IOSv/IOSvL2 devices. The emulator/runtime checks below remain pending.
 ## Explicitly unimplemented production features
 
 Controller-based SD-WAN, EVPN-VXLAN spine-and-leaf, vendor NGFW, true ZTNA/SASE, and WLC/CAPWAP Wi-Fi infrastructure are not deployed. The assignment's requirements name them, but reproducing them requires compatible images, product licenses, additional nodes, and instructor agreement on lab scope.
+
+## Advance-GWork advanced extension — 17 November 2026
+
+A separate advanced-lab pack has been added under `advanced_lab/` without
+changing the core generator or its 14-device topology. It includes a topology
+manifest, address pools, staged designs/configuration skeletons for EVPN-VXLAN
+and MPLS L3VPN, implementation plans for SD-WAN, NGFW, ZTNA/SASE and
+WLC/CAPWAP, acceptance tests, and a static manifest validator.
+
+**Validation status:** the advanced manifest and new tests have been added to
+the GitHub Actions workflow for the `Advance-GWork` branch. A passing CI run
+for this branch has not yet been confirmed. Run
+`python tools/validate_advanced_lab.py` and `python -m pytest -q` locally,
+or inspect the branch's Actions run before treating the static checks as PASS.
+
+No advanced feature has been validated on live vendor images or controllers.

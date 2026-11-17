@@ -5,7 +5,7 @@ VRF and VPNv4 support. Feature availability differs by image and license.
 
 ## Provider roles
 
-- PE-HCMC, PE-HANOI and PE-DANANG attach customer sites.
+- PE-HCMC, PE-HANOI and PE-DANANG attach customer sites. The three CE configurations are now provided as separate files.
 - P1/P2 provide the provider core.
 - Run an IGP in the provider core and LDP on provider-facing links.
 - Establish VPNv4 MP-BGP between PE routers.
@@ -77,3 +77,6 @@ router bgp 65141
 - Verify LDP, labels, VPNv4 routes, VRF route tables and traffic isolation.
 
 The snippets are deliberately incomplete templates, not paste-ready configs.
+
+
+See `CE_HANDOFF.md` for the exact cable matrix, CE interface/BGP settings, bring-up order and end-to-end loopback tests. Do not use the former generic CE skeleton when the site-specific CE files are available.

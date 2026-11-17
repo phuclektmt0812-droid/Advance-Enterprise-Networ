@@ -2,7 +2,7 @@
 title: "TechViet Innovations: Enterprise Network Design and Implementation"
 subtitle: "Technical Explanation Report — Draft, Pending Live Lab Verification"
 author: "Student / Team: [ADD GROUP NAME]"
-date: "13 November 2026"
+date: "17 November 2026"
 lang: en-US
 geometry: "margin=0.82in"
 fontsize: 10pt

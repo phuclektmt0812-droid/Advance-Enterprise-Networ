@@ -107,8 +107,8 @@ intentionally out of scope for this pass.
 
 ## Latest Advance-GWork static CI — 17 November 2026
 
-**PASS** on branch head `cfb4eb6728ef1b32c1f8e8c31c905eac6a4d8e3d`.
-Workflow: https://github.com/phuclektmt0812-droid/Advance-Enterprise-Networ/actions/runs/44026389689
+**PASS** on branch head `85c67d7ff22dd7ae2504ccc8a2183872f2a4688e`.
+Workflow: https://github.com/phuclektmt0812-droid/Advance-Enterprise-Networ/actions/runs/44026590707
 
 - Core IPv4 plan validation — PASS.
 - Advanced manifest validation — PASS.

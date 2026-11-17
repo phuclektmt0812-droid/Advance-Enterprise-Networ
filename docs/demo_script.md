@@ -3,7 +3,7 @@
 | Time | Demonstrate | Recommended evidence |
 |---|---|---|
 | 0:00–1:30 | Company scenario and 3-site Draw.io design, VLAN security zones, redundancy | Draw.io logical topology, `ip_schema.csv` |
-| 1:30–3:00 | HCMC/Hanoi/Da Nang VLANs, trunks and LACP | `show vlan brief`, `show etherchannel summary`, `show spanning-tree root` |
+| 1:30–3:00 | HCMC/Hanoi/Da Nang VLANs, trunks, LACP, Port Security and STP | `show vlan brief`, `show etherchannel summary`, `show spanning-tree root`, `show port-security` |
 | 3:00–4:30 | IPv4 VLSM, dual-stack, HSRP and centralized DHCP | `show standby brief`; VPCS `ip dhcp`; inspect lease settings |
 | 4:30–6:30 | OSPF, provider eBGP and GRE over IPsec overlays | `show ip ospf neighbor`, `show ip bgp summary`, `show crypto ipsec sa` |
 | 6:30–8:00 | Ping between sites; NAT translation; Guest ACL deny and Internet allow | Ping, `show ip nat translations`, deny counters |

@@ -1,54 +1,77 @@
-TVI CATALYST 9800 — WLAN / POLICY PROFILE / POLICY TAG TEMPLATE
-=================================================================
+TVI CATALYST 9800 — WLAN / AAA / POLICY PROFILE / POLICY TAG
+================================================================
 
-Platform: Cisco Catalyst 9800 IOS XE. Validate commands against the exact
-controller release before applying. This file is a template; replace every
-placeholder and use a console/management session with rollback access.
+Reference platform: Catalyst 9800 IOS XE. This template follows the
+controller object model: WLAN profile defines SSID/security, policy profile
+defines client VLAN/policy, and policy tag maps WLAN to policy profile.
+Confirm the exact command support on the controller release before applying.
 
-DESIGN
-------
-WLAN profile TVI-CORP (WLAN ID 110) -> policy profile TVI-CORP-POLICY -> VLAN 110
-WLAN profile TVI-GUEST (WLAN ID 150) -> policy profile TVI-GUEST-POLICY -> VLAN 150
-Both mappings are placed in policy tag TVI-SITE-POLICY.
+PLACEHOLDERS — REPLACE BEFORE APPLYING
+--------------------------------------
+<RADIUS_IP>                 RADIUS server address
+<RADIUS_SHARED_SECRET>      secret supplied outside source control
+<AP_ETHERNET_MAC>           joined AP Ethernet MAC
+<ADMIN_SOURCE_SUBNET>       permitted management subnet
 
-REQUIRED PREPARATION
---------------------
-- Create VLAN 110 and VLAN 150 on the wired switching path.
-- Ensure the WLC client-data switching model (central or Flex/local) matches
-  the switch trunk and DHCP design.
-- Configure RADIUS/AAA for corporate 802.1X using the actual server address.
-- Configure guest authentication/captive portal separately; do not leave a
-  production guest SSID unauthenticated.
-- Keep WLC management reachable only from the management network.
-- Never commit PSKs, RADIUS secrets, private keys or certificates.
+VLAN DESIGN
+-----------
+TVI-CORP WLAN ID 110 -> TVI-CORP-POLICY -> VLAN 110
+TVI-GUEST WLAN ID 150 -> TVI-GUEST-POLICY -> VLAN 150
 
-ILLUSTRATIVE CLI SHAPE
-----------------------
-! Corporate WLAN profile; add release-specific WPA2/WPA3-Enterprise AAA
-! settings and verify the RADIUS method list before enabling.
+PRE-CHECKS
+----------
+- VLAN 110 and 150 exist end-to-end on the switching path.
+- WLC management and AP CAPWAP reachability are configured.
+- RADIUS server is reachable from the WLC and has the WLC as a client.
+- RADIUS shared secret is entered interactively; never commit it here.
+- Guest web-auth/portal dependencies are available before enabling guest SSID.
+- Keep console/management rollback access and do not expose WLC management on WAN.
+
+AAA / RADIUS BASELINE
+---------------------
+aaa new-model
+radius server TVI-RADIUS
+ address ipv4 <RADIUS_IP> auth-port 1812 acct-port 1813
+ key 0 <RADIUS_SHARED_SECRET>
+aaa group server radius TVI-RADIUS-GROUP
+ server name TVI-RADIUS
+aaa authentication dot1x TVI-DOT1X group TVI-RADIUS-GROUP
+aaa authorization network TVI-NETWORK group TVI-RADIUS-GROUP
+
+CORPORATE WLAN — WPA2-ENTERPRISE / 802.1X
+-----------------------------------------
 wlan TVI-CORP 110 TVI-CORP
+ security dot1x authentication-list TVI-DOT1X
+ security wpa wpa2
+ security wpa wpa2 ciphers aes
  no shutdown
-!
-! Guest WLAN profile; add the selected guest authentication/web-auth policy.
+
+GUEST WLAN — WEB AUTHENTICATION
+-------------------------------
+! Configure the selected local/external web-auth authentication list and
+! parameter map before enabling this WLAN. Do not deploy an open guest SSID.
 wlan TVI-GUEST 150 TVI-GUEST
+ security web-auth
+ security web-auth authentication-list default
+ security web-auth parameter-map global
  no shutdown
-!
+
+POLICY PROFILES AND TAG
+-----------------------
 wireless profile policy TVI-CORP-POLICY
  vlan 110
  no shutdown
-!
 wireless profile policy TVI-GUEST-POLICY
  vlan 150
  no shutdown
-!
 wireless tag policy TVI-SITE-POLICY
  wlan TVI-CORP policy TVI-CORP-POLICY
  wlan TVI-GUEST policy TVI-GUEST-POLICY
-!
-! Apply only after the AP has joined and its Ethernet MAC is known.
+
+AP ASSIGNMENT
+-------------
 ap <AP_ETHERNET_MAC>
  policy-tag TVI-SITE-POLICY
-!
 end
 write memory
 
@@ -61,11 +84,19 @@ show wireless profile policy detailed TVI-GUEST-POLICY
 show ap summary
 show wireless client summary
 show wireless stats ap join
+show aaa servers
 
-Confirm corporate clients land in VLAN 110, guest clients land in VLAN 150,
-and wired ACL/firewall policy blocks guest access to protected corporate
-services. The policy tag maps WLAN profiles to policy profiles; it does not
-by itself create VLANs, DHCP scopes, RADIUS servers or firewall rules.
+Acceptance:
+- AP joins the controller and CAPWAP is established.
+- Corporate clients authenticate via RADIUS and receive VLAN 110 addressing.
+- Guest clients complete the configured web-auth flow and receive VLAN 150.
+- Guest clients cannot reach corporate, management, IoT or other private ranges.
+- RADIUS failure and WLC/AP restart recovery are tested.
 
-Official configuration model:
-https://www.cisco.com/c/en/us/support/docs/wireless/catalyst-9800-series-wireless-controllers/213911-understand-catalyst-9800-wireless-contro.html
+The WLAN-to-policy-profile mapping and policy-tag workflow are documented by
+Cisco. Guest web-auth commands and AAA behavior vary by IOS XE release; verify
+the chosen authentication method and parameter map on the target controller.
+Official references:
+https://www.cisco.com/c/en/us/td/docs/wireless/controller/9800/26-1/configuration-guide/wl-26-1-cg/config-model/configuring-a-wireless-profile-policy-gui.html
+https://www.cisco.com/c/en/us/td/docs/wireless/controller/9800/26-1/configuration-guide/wl-26-1-cg/config-model/tgs-and-their-associated-profiles.html
+https://www.cisco.com/c/en/us/support/docs/wireless/catalyst-9800-series-wireless-controllers/213919-configure-802-1x-authentication-on-catal.html

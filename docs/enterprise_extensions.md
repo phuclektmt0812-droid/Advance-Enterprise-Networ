@@ -22,12 +22,12 @@ not evidence that a feature is deployed.
 | QoS for voice/video | EF priority class and AF31 bandwidth class | Verify counters under generated congestion |
 | Netmiko automation | External inventory, getpass/env credentials, backups, snapshots, logs, idempotent state checks | Unit tests + actual SSH run |
 | Physical topology | Equipment/rack and cabling view; interface matrix | Confirm node placement and cable mapping |
-| EVPN-VXLAN spine-leaf | Architecture target only; current IOSv core is not an EVPN-VXLAN fabric | Requires compatible vEOS/vQFX/vIOS-XE images and additional leaf/spine nodes |
-| Controller-based SD-WAN | Current dual-ISP GRE/IPsec overlay is a teaching overlay, not managed SD-WAN | Requires controller/orchestrator, edge image and policy/telemetry demo |
-| MPLS underlay | Not implemented in current simulated ISP | Requires provider PE/P image and MPLS L3VPN/underlay lab |
-| NGFW | Not implemented as a vendor firewall appliance | Requires licensed NGFW image and policy/inspection tests |
-| ZTNA/SASE | Design target only; ACL/SSH is not ZTNA | Requires identity provider, application connector/broker and remote-user workflow |
-| WLC/CAPWAP, Wi-Fi 6/7 | Not implemented in IOSvL2 lab | Requires supported WLC/AP images or physical wireless lab |
+| EVPN-VXLAN spine-leaf | Separate two-spine/two-leaf Arista EOS starter configs, cabling/address map and host access VLANs under `advanced_lab/configs/evpn_vxlan/` | Config artifacts and manifest checks exist; live underlay, EVPN peers, VTEPs and host traffic remain unverified |
+| Controller-based SD-WAN | `advanced_lab/configs/sdwan/IMPLEMENTATION_RUNBOOK.md` plus a documented dual-WAN routing fallback | Fallback is not controller SD-WAN; licensed controller/edge onboarding, policy and telemetry remain unverified |
+| MPLS L3VPN | IOS-XE P/PE/PE/CE starter configs, CE handoff map and staged bring-up under `advanced_lab/configs/mpls_l3vpn/` | Config artifacts exist; MPLS/LDP/VPNv4/VRF forwarding still requires compatible licensed images and runtime tests |
+| NGFW | Zone/policy blueprint plus OPNsense lab guide under `advanced_lab/configs/security/` | Architecture and lab guide exist; firewall appliance deployment, stateful policy and inspection tests remain pending |
+| ZTNA/SASE | OpenZiti reference architecture and quickstart preparation script under `advanced_lab/configs/ztna/` and `advanced_lab/deploy/ztna/` | Preparation/reference artifacts exist; identity, connector, service policy and app-only access tests remain pending |
+| WLC/CAPWAP, Wi-Fi 6/7 | Catalyst 9800 WLAN/policy-profile/policy-tag CLI reference under `advanced_lab/configs/wireless/` | CLI reference exists; compatible WLC/AP, CAPWAP join and SSID traffic remain unverified |
 | 10/40-Gbps and 99.99% | Production targets, not measurable from this virtual topology | Requires production hardware, capacity tests and availability evidence |
 | Additional source-code items stated on assignment page 5 (client/server scripts, custom packet specification, message/file-transfer sequence diagram) | Not represented in this network-only repository | Confirm with instructor whether this cross-domain deliverable applies to Assignment 2; if it does, it is a separate missing deliverable and must not be invented from the network code |
 
@@ -117,7 +117,7 @@ platform, the platform accepts the configuration, the relevant positive and
 negative tests pass, and raw evidence is saved. Architecture text and static
 unit tests are not runtime proof.
 
-## 5. Separate implementation branch — Advance-GWork
+## 6. Advance-GWork advanced implementation pack
 
 The `Advance-GWork` branch contains an isolated `advanced_lab/` pack:
 - machine-readable advanced topology and address plan;

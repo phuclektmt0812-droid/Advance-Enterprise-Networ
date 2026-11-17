@@ -95,6 +95,44 @@ NAT/PAT uses an extended ACL and route-map on each enterprise WAN edge interface
 
 SSH is the only configured vty management protocol; a management-source ACL restricts login to site management subnets. Disposable lab credentials are generated locally on demand and excluded from version control. AAA, NTP, Syslog, and banners can also be deployed through Netmiko automation.
 
+# Layer 2 Port Security and Stateful Firewall Strategy
+
+Every intended host-facing switch access port is configured with sticky MAC
+learning, a maximum of two secure MAC addresses and violation mode
+`restrict`. This supports a small endpoint or phone-plus-PC demonstration
+without shutting down the port on a violation. Trunk links are excluded from
+access-port Port Security. DHCP Snooping and DAI trust is limited to router
+uplinks and the inter-switch Port-channel; endpoint-facing ports remain
+untrusted. Validate with `show port-security`, `show port-security address`,
+`show ip dhcp snooping` and `show ip arp inspection`.
+
+An optional IOS Zone-Based Firewall template is provided separately. It is
+not included in the default startup configuration because ZBF syntax and
+control-plane interactions vary by IOSv release. It must be applied only
+after core OSPF/BGP/IPsec acceptance, with console rollback access, then
+validated using the dedicated ZBF test cases. The optional IOS policy is not
+a substitute for a licensed NGFW appliance.
+
+# Physical Topology
+
+The editable physical view is `docs/TVI_Physical_Topology.drawio`, with
+equipment placement and resilience caveats in `docs/physical_topology.md`.
+The interface-level cable list remains `docs/interface_matrix.csv`. The
+teaching lab has dual routers and dual switches per site, but shared power,
+a single emulator host and single-attached service nodes remain residual
+single points of failure.
+
+# Advanced Enterprise Requirements and Scope
+
+The full assignment also names EVPN-VXLAN spine/leaf, controller-based
+SD-WAN, MPLS, NGFW, ZTNA/SASE and WLC/CAPWAP. The current IOSv/IOSvL2 core
+lab does not deploy these platforms. Their target architecture, required
+images/controllers and acceptance evidence are documented in
+`docs/enterprise_extensions.md`. Do not describe the GRE/IPsec dual-ISP
+overlay as controller-based SD-WAN, or ACL segmentation as ZTNA. A complete
+implementation requires compatible vendor images, licensing, additional
+nodes/services and runtime verification.
+
 # Voice/Video QoS
 
 Voice VLAN80 interfaces mark incoming demonstration voice traffic with DSCP EF. The WAN QoS policy contains a priority class for EF (20%) and a bandwidth class for AF31 video (15%), with class-default forwarding for ordinary data. QoS should be evaluated under congestion, and voice/video counters must increase on the actual IOS image. Depending on the IOSv forwarding path and whether classification occurs before or after encryption, packet counters on the physical IPsec-transporting interface may require image-specific policy placement. Configuration text alone is insufficient QoS proof.

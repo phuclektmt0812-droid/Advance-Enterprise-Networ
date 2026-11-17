@@ -2,10 +2,10 @@
 
 | Feature | Target lab component | Reference platform | Configuration artifact | Runtime proof required |
 |---|---|---|---|---|
-| EVPN-VXLAN | 2 spine + 4 leaf HQ fabric | Arista vEOS-lab | `configs/evpn_vxlan/` | Underlay reachability, EVPN peers, VTEPs, remote MAC/IP, host traffic |
-| MPLS L3VPN | PE/P provider cloud between 3 sites | IOS-XE/CSR1000v | `configs/mpls_l3vpn/` | IGP/LDP, VPNv4, VRF routes, inter-site traffic and isolation |
+| EVPN-VXLAN | 2 spine + 2 leaf minimum HQ fabric | Arista vEOS-lab | `configs/evpn_vxlan/SPINE1.cfg`, `SPINE2.cfg`, `LEAF1.cfg`, `LEAF2.cfg` | Underlay reachability, EVPN peers, VTEPs, remote MAC/IP, host traffic |
+| MPLS L3VPN | 2 P + 3 PE + 3 CE handoffs | IOS-XE/CSR1000v | `configs/mpls_l3vpn/P2.cfg`, `PE-*.cfg`, `CE_HANDOFF.md` | IGP/LDP, VPNv4, VRF routes, inter-site traffic and isolation |
 | SD-WAN | 3 site edges + dual transports + controllers | Licensed SD-WAN platform | `configs/sdwan/README.md` | Onboarding, control connections, app policy, brownout failover |
-| NGFW | Internet/DMZ boundary | Licensed NGFW appliance | `configs/security/README.md` | Stateful policy, inspection, logs, negative tests |
+| NGFW | Internet/DMZ boundary | OPNsense for lab demonstration; commercial NGFW for full vendor feature set | `configs/security/OPNSENSE_LAB_GUIDE.md`, `NGFW_POLICY_BLUEPRINT.md` | Stateful policy, IDS alerts, logs, negative tests |
 | ZTNA/SASE | Remote user -> broker -> private app | Identity/SASE platform | `configs/ztna/README.md` | MFA/posture if supported, app-only access, denied lateral access |
 | WLC/CAPWAP | WLC + lightweight AP | Supported WLC/AP images | `configs/wireless/README.md` | AP join, CAPWAP, SSID/VLAN, guest isolation |
 

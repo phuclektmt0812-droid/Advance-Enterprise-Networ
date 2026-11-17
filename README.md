@@ -48,23 +48,64 @@ GNS3 / EVE-NG Cisco IOSv + IOSvL2 project, with Python Netmiko automation, test 
 | `docs/Technical_Explanation_Report_DRAFT.md` | Report draft; real test evidence must be added |
 | `tests/` | Self-contained pytest suite (mocked automation + design checks) |
 
-## 3. Install local Python dependencies
+## 3. Set up Python and VS Code (Windows)
 
-From the project directory:
+The repository supports Python 3.10+. For the simplest Windows setup, use
+**64-bit CPython 3.12** from python.org rather than an MSYS2/MinGW Python
+build. The latter can require platform-specific compiled packages, especially
+for Paramiko/Cryptography. Do not install a second interpreter if your current
+interpreter already works.
 
-```bash
+1. Install Python 3.12 (64-bit) and select **Add Python to PATH** in the
+   installer. Install the Microsoft **Python** extension in VS Code.
+2. Clone this repository and check out the `Advance-GWork` branch.
+3. Open the repository root folder in VS Code.
+4. Open **Terminal → New Terminal** and use PowerShell:
+
+```powershell
+py -3.12 --version
+py -3.12 -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python tools/validate_plan.py
-python tools/build_lab.py
-python tools/generate_topology.py
-python -m pytest -q
+python -m pip check
 ```
 
-On Windows PowerShell, the same commands work when Python is on `PATH`. If `python` is unavailable, try `py -3`.
+5. In VS Code press **Ctrl+Shift+P**, choose **Python: Select Interpreter**,
+   and select the interpreter inside this repository's `.venv` folder.
+6. Run the complete local test suite:
 
-Running `build_lab.py` creates unique disposable SSH and pre-shared key secrets in `build/secrets.local.env`. It **reuses the same secrets** on subsequent builds so all tunnel peers remain consistent. If you delete this file and rebuild, reapply all generated router configs because the IPsec key changes.
+```powershell
+python -m pytest -v
+```
 
-**Do not commit `build/` or any lab secrets to public GitHub.** Real Cisco `startup-config` files inevitably contain credentials or credential hashes, and must be treated as sensitive.
+7. Run the project validators and generate the core lab configuration:
+
+```powershell
+python tools/validate_plan.py
+python tools/validate_advanced_lab.py
+python tools/build_lab.py
+python tools/generate_topology.py
+```
+
+The Python dependencies are declared in `requirements.txt`:
+- `netmiko`: SSH automation of Cisco IOS devices.
+- `PyYAML`: reads the network plan, inventory and VLAN data.
+- `pytest`: runs the automated tests.
+
+Pip installs Netmiko's runtime dependencies as well (including Paramiko,
+Cryptography, PySerial, TextFSM, NTC Templates, Rich and SCP). On a normal
+64-bit CPython Windows installation, install the complete set with
+`python -m pip install -r requirements.txt`; do not install these packages
+one by one unless pip reports a specific failure.
+
+**Important distinction:** `python -m pytest -v` runs local tests with mocked
+network connections. It does not require GNS3 and does not connect to routers.
+A successful test run validates the Python logic, not the live network.
+
+For a more detailed Windows walkthrough and the separate live-lab procedure,
+see [docs/SETUP_WINDOWS_VSCODE.md](docs/SETUP_WINDOWS_VSCODE.md).
 
 ## 4. Create and wire nodes
 

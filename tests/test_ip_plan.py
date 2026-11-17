@@ -27,7 +27,9 @@ def test_vlan_must_fit_site_prefix():
 def test_router_has_ospf_bgp_hsrp_ipv6_nat_qos(site):
     plan = load_plan()
     config = create_router(site, plan['sites'][site], 1, plan, CREDENTIALS)
-    for expected in ('router ospf 10', 'ipv6 router ospf 10', 'router bgp ',
+    for expected in ('aaa new-model', 'aaa authentication login default local',
+                     'aaa authorization exec default local',
+                     'router ospf 10', 'ipv6 router ospf 10', 'router bgp ',
                      'standby 99 ip', 'standby 99 preempt', 'ip nat inside source route-map',
                      'ip access-list extended ACL-GUEST-IN', 'ip access-list extended ACL-IOT-IN',
                      'ipv6 traffic-filter V6-GUEST-IN in', 'ipv6 traffic-filter V6-IOT-IN in',
@@ -40,7 +42,8 @@ def test_router_has_ospf_bgp_hsrp_ipv6_nat_qos(site):
 def test_switch_has_lacp_stp_snooping_dai(site):
     plan = load_plan()
     conf = render_switch(site, plan['sites'][site], 1, CREDENTIALS)
-    for expected in ('channel-group 1 mode active', 'spanning-tree mode rapid-pvst',
+    for expected in ('aaa new-model', 'aaa authentication login default local',
+                     'channel-group 1 mode active', 'spanning-tree mode rapid-pvst',
                      'ip dhcp snooping', 'ip arp inspection vlan',
                      'spanning-tree bpduguard enable', 'interface Vlan99', 'switchport trunk native vlan 999',
                      'switchport port-security', 'switchport port-security maximum 2',

@@ -1,0 +1,66 @@
+TVI WIRELESS — CISCO CATALYST 9800 REFERENCE
+=============================================
+
+Platform: Catalyst 9800 WLC plus compatible lightweight AP. This is a
+version-dependent reference, not IOSvL2 configuration. Validate exact CLI
+against the selected 9800 release and AP model.
+
+ADDRESSING / VLAN INTENT
+------------------------
+WLC management: 10.43.20.10/24
+Management gateway: 10.43.20.1
+Corporate SSID: TVI-CORP -> VLAN 110
+Guest SSID: TVI-GUEST -> VLAN 150
+RADIUS: replace <RADIUS_IP> with a real lab RADIUS server.
+Never commit PSKs, RADIUS secrets or certificates.
+
+SWITCHPORT HANDOFF
+------------------
+The switchport connected to WLC must be an 802.1Q trunk with VLAN 110,
+150 and the management VLAN permitted. AP-facing switchports should carry
+the management/native VLAN and the required client VLANs according to the
+selected local/flex deployment model. Do not assume every AP model supports
+the same mode.
+
+WLC CONFIGURATION WORKFLOW
+--------------------------
+1. Configure management interface/VLAN and default route using the
+   release-specific Catalyst 9800 procedure.
+2. Configure NTP and DNS; ensure APs can discover the controller.
+3. Configure the wireless management trustpoint/certificate and AP join
+   authorization policy.
+4. Create a RADIUS server and AAA method list if using 802.1X.
+5. Create WLAN profiles for TVI-CORP and TVI-GUEST.
+6. Create policy profiles mapping corporate clients to VLAN 110 and guest
+   clients to VLAN 150.
+7. Bind WLAN profiles to policy profiles and policy tags.
+8. Assign the policy tag to the AP and verify CAPWAP join.
+9. Apply guest ACL/firewall policy so VLAN 150 cannot reach corporate
+   service networks.
+
+ILLUSTRATIVE WLAN COMMAND SHAPE
+-------------------------------
+The exact syntax and command order vary by 9800 release. Use the GUI or
+release-specific CLI guide to create:
+- WLAN ID 110, profile/name TVI-CORP, SSID TVI-CORP, WPA2/WPA3-Enterprise
+- WLAN ID 150, profile/name TVI-GUEST, SSID TVI-GUEST, guest authentication
+- Policy profile TVI-CORP-POLICY -> VLAN 110
+- Policy profile TVI-GUEST-POLICY -> VLAN 150
+- Policy tag TVI-SITE-POLICY -> both WLAN/policy profile pairs
+
+CAPWAP / DISCOVERY REQUIREMENTS
+------------------------------
+Allow AP-to-WLC reachability for the platform's CAPWAP control/data ports
+(UDP 5246/5247 where applicable), DNS and NTP. Confirm DHCP Option 43 or
+DNS discovery only if required by the deployment model. Do not expose WLC
+management to guest or untrusted networks.
+
+ACCEPTANCE
+----------
+show wireless summary
+show ap summary
+show wireless client summary
+show wireless stats ap join
+Verify AP is joined, corporate client receives VLAN 110 addressing, guest
+client receives VLAN 150 addressing, and guest cannot reach protected
+corporate services. Save AP/WLC logs for join failures.

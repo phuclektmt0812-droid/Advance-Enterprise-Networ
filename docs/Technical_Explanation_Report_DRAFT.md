@@ -20,6 +20,22 @@ The implemented **teaching-lab design** includes two network routers and two cam
 
 **Verification status:** Python-based static checks and mocked automation tests are available. **End-to-end device behavior and SLA claims are not yet independently verified.** The instructor should not treat a generated Cisco configuration as proof of successful emulation. Evidence screenshots must be added after running the live test plan.
 
+## Verification update — 17 November 2026
+
+The project owner reports that the full local Python test suite
+(`python -m pytest -v`) passes in the Windows VS Code virtual environment
+and that Netmiko's imports and runtime dependencies are available. This
+validates the local code and mocked automation behavior only.
+
+A live automation attempt was made before the GNS3 topology had been
+configured. All 12 SSH connections timed out because no corresponding
+running lab endpoints were available. Therefore, no live device provisioning,
+AAA/VLAN change, backup capture from real IOS devices, routing, tunnel,
+failover or end-to-end traffic result is claimed in this report. These
+sections remain pending until the GNS3/EVE-NG lab is running and evidence is
+collected. See `docs/VALIDATION_STATUS.md` and
+`docs/SETUP_WINDOWS_VSCODE.md`.
+
 # Business Requirements and Scope
 
 TVI serves more than 2,000 headquarters users, 1,500 Hanoi engineering users, and 500 Da Nang logistics users, plus 10,000+ IoT endpoints and guests. The assignment specifies growth to 10,000+ internal users by 2030, a 10/40 Gbps HQ backbone target, 99.99% uptime, secure hybrid workforce access, and differentiated traffic handling for voice, video, and data.

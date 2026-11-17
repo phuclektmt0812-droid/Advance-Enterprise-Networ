@@ -42,8 +42,15 @@ def test_switch_has_lacp_stp_snooping_dai(site):
     conf = render_switch(site, plan['sites'][site], 1, CREDENTIALS)
     for expected in ('channel-group 1 mode active', 'spanning-tree mode rapid-pvst',
                      'ip dhcp snooping', 'ip arp inspection vlan',
-                     'spanning-tree bpduguard enable', 'interface Vlan99', 'switchport trunk native vlan 999'):
+                     'spanning-tree bpduguard enable', 'interface Vlan99', 'switchport trunk native vlan 999',
+                     'switchport port-security', 'switchport port-security maximum 2',
+                     'switchport port-security violation restrict',
+                     'switchport port-security mac-address sticky'):
         assert expected in conf
+    # Host-facing ports remain untrusted for DHCP Snooping and DAI.
+    host_port = conf.split('interface GigabitEthernet0/3', 1)[1].split('interface GigabitEthernet0/4', 1)[0]
+    assert 'ip dhcp snooping trust' not in host_port
+    assert 'ip arp inspection trust' not in host_port
 
 
 def test_dnsmasq_has_branch_dhcp_and_correct_gateways():

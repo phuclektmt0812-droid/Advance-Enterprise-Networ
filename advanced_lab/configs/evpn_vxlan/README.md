@@ -91,3 +91,45 @@ router bgp 65140
 5. Capture the EVPN acceptance evidence in `docs/acceptance_tests.md`.
 
 Do not paste these skeletons blindly: they are not complete device configs.
+
+
+## Exact minimum-stage cabling and host addressing
+
+Use four vEOS nodes and two lightweight Linux/VPCS hosts. Cable:
+
+| Link | Device A | Port A | Device B | Port B | IPv4 subnet |
+|---|---|---|---|---|---|
+| Underlay | SPINE1 | Ethernet1 | LEAF1 | Ethernet1 | 10.40.0.0/31 |
+| Underlay | SPINE2 | Ethernet1 | LEAF1 | Ethernet2 | 10.40.0.2/31 |
+| Underlay | SPINE1 | Ethernet2 | LEAF2 | Ethernet1 | 10.40.0.4/31 |
+| Underlay | SPINE2 | Ethernet2 | LEAF2 | Ethernet2 | 10.40.0.6/31 |
+| Tenant host | LEAF1 | Ethernet3 | HOST-A | eth0 | VLAN 110 |
+| Tenant host | LEAF2 | Ethernet3 | HOST-B | eth0 | VLAN 110 |
+
+Host A: `10.40.130.11/24`; Host B: `10.40.130.12/24`.
+No default gateway is needed for this same-subnet L2 extension test. Both
+host-facing ports are access VLAN 110 and VLAN 110 maps to VNI 10110.
+The additional Ethernet4/Ethernet5 ports on each leaf are reserved for VLAN
+120 and VLAN 150 test hosts.
+
+## Apply and verify
+
+1. Load the matching SPINE1, SPINE2, LEAF1 and LEAF2 files.
+2. Verify OSPF underlay and loopback reachability.
+3. Verify MP-BGP EVPN sessions on both spines and leaves.
+4. Confirm VLAN 110 / VNI 10110 is active and the remote host MAC is learned.
+5. Ping Host B from Host A. Then disconnect one spine-leaf link and repeat.
+
+Typical EOS checks:
+```text
+show ip ospf neighbor
+show ip route 10.40.250.12
+show bgp evpn summary
+show vxlan vtep
+show vxlan address-table
+show mac address-table dynamic
+```
+
+The config set is a two-leaf L2 EVPN demonstration. It intentionally does
+not claim symmetric IRB, anycast gateway, multi-tenant inter-VNI routing,
+or four-leaf scale-out; those require an additional L3 VNI/gateway design.

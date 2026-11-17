@@ -35,5 +35,7 @@ def test_duplicate_vni_is_rejected():
 
 def test_duplicate_mpls_rd_is_rejected():
     plan = deepcopy(load_manifest())
-    plan["mpls"]["customer_vrfs"][1]["rd"] = plan["mpls"]["customer_vrfs"][0]["rd"]
+    duplicate = deepcopy(plan["mpls"]["customer_vrfs"][0])
+    duplicate["name"] = "TVI_DUPLICATE"
+    plan["mpls"]["customer_vrfs"].append(duplicate)
     assert any("duplicate MPLS route distinguisher" in error for error in validate(plan))

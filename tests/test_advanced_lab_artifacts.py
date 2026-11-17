@@ -26,7 +26,7 @@ def test_core_qos_is_documented_and_attached_by_generator():
     assert "TVI-WAN-OUT" in content
     assert "strict-priority" in content
     generator = read("tools/build_lab.py")
-    assert "'service-policy output TVI-WAN-OUT'" in generator
+    assert "service-policy output TVI-WAN-OUT" in generator
 
 
 def test_controller_and_security_stages_have_concrete_artifacts():

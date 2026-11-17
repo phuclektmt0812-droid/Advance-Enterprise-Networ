@@ -2,7 +2,8 @@
 
 Record command output, timestamps, topology snapshot and traffic test results
 for each test. Use the exact command equivalent supported by the selected
-vendor image; command names vary by release.
+vendor image; command names vary by release. The EVPN and MPLS config folders
+contain cabling/address maps and device-specific starting configurations.
 
 ## A — EVPN-VXLAN
 
@@ -15,6 +16,8 @@ vendor image; command names vary by release.
   gateway/policy permits it.
 - A07: shut one spine-facing link; traffic reconverges through the remaining
   path and EVPN routes remain usable.
+- A08: Host A (10.40.130.11/24) and Host B (10.40.130.12/24), attached to
+  LEAF1/LEAF2 access VLAN 110, complete bidirectional same-subnet ping.
 
 ## B — MPLS L3VPN
 
@@ -24,6 +27,10 @@ vendor image; command names vary by release.
 - B04: each customer VRF imports only its intended route targets.
 - B05: approved HCMC/Hanoi/Da Nang prefixes are reachable across the VPN.
 - B06: a route from an unrelated VRF is not leaked into the customer VRF.
+- B07: CE-HCMC, CE-HANOI and CE-DANANG each establish eBGP to their local PE.
+- B08: the three CE Loopback100 prefixes (10.10.250.1/32,
+  10.20.250.1/32, 10.30.250.1/32) are learned in the shared VRF.
+- B09: sourced pings between all three CE Loopback100 addresses succeed.
 
 ## C — SD-WAN
 

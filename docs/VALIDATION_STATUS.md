@@ -103,3 +103,23 @@ wireless requires a compatible WLC and lightweight AP. These artifacts are
 implementation-ready design/configuration references, not proof of a running
 advanced lab. 10/40-Gbps capacity and 99.99% availability measurements remain
 intentionally out of scope for this pass.
+
+
+## Latest Advance-GWork static CI — 17 November 2026
+
+**PASS** on branch head `cfb4eb6728ef1b32c1f8e8c31c905eac6a4d8e3d`.
+Workflow: https://github.com/phuclektmt0812-droid/Advance-Enterprise-Networ/actions/runs/44026389689
+
+- Core IPv4 plan validation — PASS.
+- Advanced manifest validation — PASS.
+- Core config generation — PASS (12 enterprise + 2 provider configs).
+- Pytest — **32 passed**.
+- Python compileall — PASS.
+- Linux service shell syntax — PASS.
+
+This is static CI only. The EOS/IOS-XE/OPNsense/SD-WAN/WLC/ZTNA stages have
+not been booted as virtual appliances in this CI run. The branch now includes
+a runnable minimum configuration set for EVPN (2 spines + 2 leaves) and
+MPLS L3VPN (P/PE plus CE handoff examples), while controller- and
+appliance-dependent stages remain platform setup guides. Actual image
+compatibility and end-to-end traffic still require the user's emulator lab.

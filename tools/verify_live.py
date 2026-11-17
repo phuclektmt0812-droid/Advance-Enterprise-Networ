@@ -26,7 +26,9 @@ COMMANDS = {
                'show policy-map interface GigabitEthernet0/1'],
     'switch': ['show vlan brief', 'show interfaces trunk', 'show etherchannel summary',
                'show spanning-tree root', 'show ip dhcp snooping',
-               'show ip arp inspection'],
+               'show ip arp inspection', 'show port-security',
+               'show port-security interface GigabitEthernet0/3',
+               'show port-security address'],
 }
 
 
@@ -36,10 +38,14 @@ def checklist(device: dict, evidence: dict[str, str]) -> dict[str, bool | None]:
         vlan = evidence.get('show vlan brief', '')
         channel = evidence.get('show etherchannel summary', '')
         trunk = evidence.get('show interfaces trunk', '')
+        port_security = evidence.get('show port-security interface GigabitEthernet0/3', '')
         return {
             'required_VLANs_visible': all(re.search(rf'^\s*{v}\s+', vlan, re.M) for v in (10, 20, 30, 99)),
             'LACP_portchannel_P_indicators': bool(re.search(r'Po1\(SU\)', channel)) and bool(re.search(r'\(P\)', channel)),
             'trunk_status_visible': 'trunking' in trunk.lower(),
+            'access_port_security_enabled': bool(re.search(r'Port Security\s*:\s*Enabled', port_security, re.I)),
+            'access_port_security_maximum_2': bool(re.search(r'Maximum MAC Addresses\s*:\s*2', port_security, re.I)),
+            'access_port_security_violation_restrict': bool(re.search(r'Violation Mode\s*:\s*Restrict', port_security, re.I)),
         }
     ospf = evidence.get('show ip ospf neighbor', '')
     bgp = evidence.get('show ip bgp summary', '')

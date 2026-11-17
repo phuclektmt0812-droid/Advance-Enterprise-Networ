@@ -39,6 +39,10 @@ GNS3 / EVE-NG Cisco IOSv + IOSvL2 project, with Python Netmiko automation, test 
 | `docs/interface_matrix.csv` | Exact virtual device interfaces and cables |
 | `docs/ip_schema.csv` | IPv4 VLSM and IPv6 site/VLAN plan |
 | `docs/TVI_Logical_Topology.drawio` | Editable logical topology file for draw.io |
+| `docs/TVI_Physical_Topology.drawio` | Editable physical topology / site equipment placement |
+| `docs/physical_topology.md` | Physical placement, WAN demarcation and resiliency notes |
+| `docs/enterprise_extensions.md` | Requirement-by-requirement compliance register and extension architecture |
+| `docs/config_templates/IOSv_Zone_Based_Firewall_OPTIONAL.txt` | Opt-in stateful firewall template; not in default bootstrap |
 | `docs/testcases.md` | Manual and automated tests with expected results |
 | `docs/demo_script.md` | 15-minute lecturer demonstration plan |
 | `docs/Technical_Explanation_Report_DRAFT.md` | Report draft; real test evidence must be added |

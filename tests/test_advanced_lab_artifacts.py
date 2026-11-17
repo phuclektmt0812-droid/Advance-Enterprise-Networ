@@ -49,6 +49,10 @@ def test_controller_and_security_stages_have_concrete_artifacts():
         "advanced_lab/configs/security/NGFW_POLICY_BLUEPRINT.md",
         "advanced_lab/configs/ztna/OPENZITI_REFERENCE.md",
         "advanced_lab/configs/wireless/CISCO_9800_REFERENCE.txt",
+        "advanced_lab/configs/wireless/C9800_CLI_TEMPLATE.txt",
+        "advanced_lab/deploy/ztna/prepare-openziti.ps1",
+        "advanced_lab/deploy/ztna/README.md",
+        "advanced_lab/configs/sdwan/DUAL_WAN_ROUTING_FALLBACK.md",
     ]
     for path in paths:
         assert (ROOT / path).is_file()

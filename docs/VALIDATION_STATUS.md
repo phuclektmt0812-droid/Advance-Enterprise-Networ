@@ -155,3 +155,31 @@ end-to-end forwarding. True controller-managed SD-WAN still requires a
 compatible licensed controller/edge stack. Catalyst 9800 CAPWAP still
 requires a compatible WLC and lightweight AP. Runtime acceptance tests remain
 pending in the user's GNS3/EVE-NG environment.
+
+
+## Local Windows/VS Code verification — 17 November 2026
+
+The project owner reports that the full command
+`python -m pytest -v` completed with all tests passing in the local
+`.venv`. Netmiko and its runtime dependencies were also installed and the
+`netmiko`, `paramiko`, `cryptography`, `serial` and `textfsm` imports
+were verified in that environment.
+
+A subsequent attempt to run `python automation/auto_provision.py` reported
+TCP connection timeouts for all 12 enterprise devices. At the time of that
+attempt, the GNS3 lab had not yet been set up or started. This is therefore an
+expected environment/connectivity failure, **not a successful live automation
+test and not evidence that the 12 devices are configured**.
+
+Current status:
+- Local Python automated tests: **PASS (owner-reported)**.
+- Netmiko dependency/import setup: **PASS (owner-reported)**.
+- Core GNS3/EVE-NG topology booted: **PENDING**.
+- SSH reachability to the 12 enterprise management addresses: **PENDING**.
+- Live Netmiko provisioning and post-change verification: **PENDING**.
+- Advanced EVPN/MPLS/controller/appliance runtime tests: **PENDING**.
+
+Do not mark any `LAB REQUIRED` test as PASS until the relevant virtual
+devices are running, the commands have been accepted, and evidence has been
+saved. The Windows setup and live-lab sequence is documented in
+`docs/SETUP_WINDOWS_VSCODE.md`.

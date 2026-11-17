@@ -24,7 +24,7 @@ def test_mpls_reference_has_ldp_vpnv4_and_customer_vrf():
 def test_core_qos_is_documented_and_attached_by_generator():
     content = read("docs/config_templates/IOS_QOS_VOICE_VIDEO.txt")
     assert "TVI-WAN-OUT" in content
-    assert "priority queue" in content
+    assert "strict-priority" in content
     generator = read("tools/build_lab.py")
     assert "'service-policy output TVI-WAN-OUT'" in generator
 

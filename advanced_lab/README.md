@@ -1,8 +1,9 @@
 # TVI Advanced Enterprise Lab (separate from core)
 
-This lab is an **optional extension** to the 14-device core topology. It lives
-on its own branch and uses separate address space. Do not merge its device
-configs into `network_plan.yaml` or `tools/build_lab.py`.
+This lab is an **optional extension** to the 14-device core topology. It is
+kept in the separate `advanced_lab/` folder on the `Advance-GWork` branch
+and uses separate address space. Do not merge its device configs into
+`network_plan.yaml` or `tools/build_lab.py`.
 
 ## Goals
 

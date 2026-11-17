@@ -52,7 +52,7 @@ These are lab-only addresses; do not advertise them to a real ISP.
 - EVPN-VXLAN: Arista vEOS-lab is the reference platform. Device configs are in
   `configs/evpn_vxlan/` (SPINE1/2 and LEAF1/2) for the minimum two-leaf stage;
   add LEAF3/4 only after the first stage passes.
-- MPLS L3VPN: Cisco IOS-XE/CSR1000v is the reference platform. P1/P2, three PE configs and
+- MPLS L3VPN: Cisco IOS-XE/CSR1000v is the reference platform. P1/P2, three PE configs, three CE configs and
   CE handoff instructions are in `configs/mpls_l3vpn/`; confirm MPLS, LDP,
   VRF and VPNv4 support in the exact image.
 - SD-WAN: requires licensed SD-WAN edge and controller/orchestrator images.

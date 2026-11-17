@@ -31,6 +31,16 @@ def test_core_qos_is_documented_and_attached_by_generator():
 
 def test_controller_and_security_stages_have_concrete_artifacts():
     paths = [
+        "advanced_lab/configs/evpn_vxlan/SPINE1.cfg",
+        "advanced_lab/configs/evpn_vxlan/SPINE2.cfg",
+        "advanced_lab/configs/evpn_vxlan/LEAF1.cfg",
+        "advanced_lab/configs/evpn_vxlan/LEAF2.cfg",
+        "advanced_lab/configs/mpls_l3vpn/P2.cfg",
+        "advanced_lab/configs/mpls_l3vpn/PE-HCMC.cfg",
+        "advanced_lab/configs/mpls_l3vpn/PE-HANOI.cfg",
+        "advanced_lab/configs/mpls_l3vpn/PE-DANANG.cfg",
+        "advanced_lab/configs/mpls_l3vpn/CE_HANDOFF.md",
+        "advanced_lab/configs/security/OPNSENSE_LAB_GUIDE.md",
         "advanced_lab/configs/sdwan/IMPLEMENTATION_RUNBOOK.md",
         "advanced_lab/configs/security/NGFW_POLICY_BLUEPRINT.md",
         "advanced_lab/configs/ztna/OPENZITI_REFERENCE.md",

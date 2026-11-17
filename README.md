@@ -168,7 +168,35 @@ python tools/verify_live.py --only HCMC-R1 HANOI-R1 HCMC-SW1
 
 The first command tests Python logic with mock devices; **it does not prove routers are running**. The second collects read-only CLI evidence from actual lab devices under `build/evidence/<UTC timestamp>/`, with JSON results. The live-check script deliberately marks some items for manual review rather than pretending that a captured command always means success. Follow **all** `docs/testcases.md` manual steps (including negative security tests and failover).
 
-## 10. Submission and limitations
+## 10. Security hardening additions
+
+Generated switch access ports now enable sticky Port Security with a maximum
+of two secure MAC addresses and violation mode restrict. Router/switch trunks
+are not treated as endpoint access ports. DHCP Snooping and DAI trust remains
+on the router-facing and switch-peer uplinks; host-facing ports remain
+untrusted. Initial router/switch configurations include local AAA login
+baseline. Verify with:
+
+```text
+show port-security
+show port-security interface GigabitEthernet0/3
+show port-security address
+show ip dhcp snooping
+show ip arp inspection
+```
+
+The optional Zone-Based Firewall template is in
+docs/config_templates/IOSv_Zone_Based_Firewall_OPTIONAL.txt. It is deliberately
+not enabled in the default config because ZBF behavior and command support
+depend on the exact IOSv image and can interrupt routing/tunnel control-plane
+traffic if misapplied. Apply only on a disposable router after the core tests
+pass, following its pre-check and rollback procedure.
+
+For the advanced enterprise targets (EVPN-VXLAN, controller SD-WAN, MPLS,
+NGFW, ZTNA/SASE and WLC/CAPWAP), see docs/enterprise_extensions.md. These are
+not falsely represented as deployed in the IOSv core lab.
+
+## 11. Submission and limitations
 
 - Submit the **Technical Explanation Report PDF** after replacing `NOT TESTED` placeholders with actual screenshots, logs, and measured results.
 - Submit *startup-config exports from running devices*, along with generated initial configuration files and automation source code. Generated bootstrap config files alone are **not proof** that devices accepted the commands.

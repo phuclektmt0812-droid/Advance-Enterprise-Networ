@@ -35,6 +35,7 @@ def test_controller_and_security_stages_have_concrete_artifacts():
         "advanced_lab/configs/evpn_vxlan/SPINE2.cfg",
         "advanced_lab/configs/evpn_vxlan/LEAF1.cfg",
         "advanced_lab/configs/evpn_vxlan/LEAF2.cfg",
+        "advanced_lab/configs/mpls_l3vpn/P1.cfg",
         "advanced_lab/configs/mpls_l3vpn/P2.cfg",
         "advanced_lab/configs/mpls_l3vpn/PE-HCMC.cfg",
         "advanced_lab/configs/mpls_l3vpn/PE-HANOI.cfg",

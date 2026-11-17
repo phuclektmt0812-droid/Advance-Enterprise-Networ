@@ -123,3 +123,35 @@ a runnable minimum configuration set for EVPN (2 spines + 2 leaves) and
 MPLS L3VPN (P/PE plus CE handoff examples), while controller- and
 appliance-dependent stages remain platform setup guides. Actual image
 compatibility and end-to-end traffic still require the user's emulator lab.
+
+
+## Technical implementation follow-up — 17 November 2026
+
+Branch: `Advance-GWork`
+Validated commit: `a6132ee329c5d970953bc0771b15fcdc1224490b`
+CI: https://github.com/phuclektmt0812-droid/Advance-Enterprise-Networ/actions/runs/44028029274
+
+Static CI result: **PASS**
+- Core IP plan validation and config generation: PASS.
+- Advanced manifest validation: PASS.
+- Pytest: **34 passed**.
+- Python compileall and service shell syntax: PASS.
+
+Implementation artifacts added in this pass:
+- Site-specific CE-HCMC, CE-HANOI and CE-DANANG configurations with eBGP
+  handoffs and test loopbacks for the MPLS L3VPN lab.
+- Exact provider/PE/CE link matrix and staged bring-up procedure.
+- EVPN two-spine/two-leaf cabling and host addressing, plus access ports for
+  VLANs 110/120/150.
+- OpenZiti Docker Compose quickstart preparation script; it downloads the
+  official learning quickstart and keeps local .env/enrollment materials out
+  of Git.
+- Catalyst 9800 WLAN/policy-profile/policy-tag CLI template.
+- Explicit dual-WAN fallback runbook, clearly distinguished from controller-
+  managed SD-WAN.
+
+Static CI does not execute Cisco/Arista CLI, start Docker appliances, or prove
+end-to-end forwarding. True controller-managed SD-WAN still requires a
+compatible licensed controller/edge stack. Catalyst 9800 CAPWAP still
+requires a compatible WLC and lightweight AP. Runtime acceptance tests remain
+pending in the user's GNS3/EVE-NG environment.

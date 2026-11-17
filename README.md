@@ -205,3 +205,20 @@ not falsely represented as deployed in the IOSv core lab.
 - A real production-grade lab would require a resilient HQ service tier, full NGFW and ZTNA/SASE integration, true controller-based SD-WAN and a verified spine/leaf EVPN-VXLAN fabric. The provided image families and 10-step scoring rubric do not define all of those implementations. **Do not claim these have been implemented.**
 
 **Security note:** `build/secrets.local.env` and configs under `build/` contain **disposable lab credentials**. They are never hardcoded in Python source. Do not post those files publicly or reuse the credentials on actual equipment.
+
+
+## Optional advanced enterprise extension
+
+The separate `advanced_lab/` folder contains the staged design for
+EVPN-VXLAN, MPLS L3VPN, controller-based SD-WAN, NGFW, ZTNA/SASE and
+WLC/CAPWAP. It is intentionally isolated from the core 14-device lab.
+Start with `advanced_lab/README.md`; validate its address and topology
+manifest with:
+
+```powershell
+python tools/validate_advanced_lab.py
+```
+
+These are design/configuration artifacts, not proof of live deployment.
+The advanced stages require compatible licensed images and, for controller-
+based services, the corresponding controller software and licenses.

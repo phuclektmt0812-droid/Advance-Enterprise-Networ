@@ -1,5 +1,24 @@
 # Validation Results — 13 November 2026
 
+## Update — 17 November 2026
+
+The GWork branch has since been extended with:
+- AAA local authentication baseline in generated device configurations.
+- Sticky access-port Port Security (maximum two MAC addresses, violation restrict).
+- A test assertion for endpoint ports remaining untrusted for DHCP Snooping/DAI.
+- Live verification collection for Port Security interface state.
+- Editable physical topology diagram and physical placement notes.
+- An opt-in IOSv Zone-Based Firewall template with pre-check and rollback guidance.
+- An enterprise extension/compliance register for EVPN-VXLAN, SD-WAN, MPLS,
+  NGFW, ZTNA/SASE and WLC/CAPWAP.
+- GitHub Actions static validation workflow.
+
+**Important:** these changes have not yet been rerun on the user's machine or on
+a live IOSv/IOSvL2 emulator. The earlier 22-test result applies to the earlier
+GWork revision, not automatically to the latest commits. Run the updated CI
+workflow or the local commands in README before treating this revision as
+static-test PASS.
+
 ## What was actually checked in this environment
 
 - `python tools/validate_plan.py` — **PASS**: IPv4 VLANs, loopback/link and GRE tunnels do not overlap; IPv6 VLAN/tunnel prefixes do not overlap.

@@ -29,6 +29,7 @@ not evidence that a feature is deployed.
 | ZTNA/SASE | Design target only; ACL/SSH is not ZTNA | Requires identity provider, application connector/broker and remote-user workflow |
 | WLC/CAPWAP, Wi-Fi 6/7 | Not implemented in IOSvL2 lab | Requires supported WLC/AP images or physical wireless lab |
 | 10/40-Gbps and 99.99% | Production targets, not measurable from this virtual topology | Requires production hardware, capacity tests and availability evidence |
+| Additional source-code items stated on assignment page 5 (client/server scripts, custom packet specification, message/file-transfer sequence diagram) | Not represented in this network-only repository | Confirm with instructor whether this cross-domain deliverable applies to Assignment 2; if it does, it is a separate missing deliverable and must not be invented from the network code |
 
 ## 2. Recommended target architecture
 

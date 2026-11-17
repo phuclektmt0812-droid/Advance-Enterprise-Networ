@@ -9,10 +9,10 @@ VRF and VPNv4 support. Feature availability differs by image and license.
 - P1/P2 provide the provider core.
 - Run an IGP in the provider core and LDP on provider-facing links.
 - Establish VPNv4 MP-BGP between PE routers.
-- Use a separate customer VRF per site only if the assignment requires
-  isolation; if the three sites are one enterprise VPN, use one shared VRF
-  and a common route-target instead. The manifest currently describes
-  separate VRFs as an isolation example, not an approved business policy.
+- Use one shared customer VRF (TVI_ENTERPRISE) across all three PE routers so
+  the three sites exchange routes within the same enterprise VPN. The same
+  route-target is imported/exported at each PE; use unique RDs per PE in the
+  final device configuration if the platform design requires them.
 
 ## IOS-XE configuration skeleton — provider core
 
@@ -38,14 +38,14 @@ router ospf 41
 ## IOS-XE configuration skeleton — PE
 
 ```text
-ip vrf TVI_HCMC
- rd 65141:10
- route-target import 65141:10
- route-target export 65141:10
+ip vrf TVI_ENTERPRISE
+ rd 65141:100
+ route-target import 65141:100
+ route-target export 65141:100
 !
 interface GigabitEthernet0/1
  description CUSTOMER_HANDOFF
- ip vrf forwarding TVI_HCMC
+ ip vrf forwarding TVI_ENTERPRISE
  ip address 10.10.254.1 255.255.255.252
  no shutdown
 !
@@ -59,7 +59,7 @@ router bgp 65141
   neighbor 10.41.250.2 send-community extended
  exit-address-family
  !
- address-family ipv4 vrf TVI_HCMC
+ address-family ipv4 vrf TVI_ENTERPRISE
   redistribute connected
  exit-address-family
 ```
@@ -70,8 +70,8 @@ router bgp 65141
 - Ensure provider IGP carries PE loopbacks; do not redistribute customer routes
   into the provider global table.
 - Configure a VPNv4 full mesh or route reflectors.
-- The manifest's separate VRFs are an example. Confirm whether TVI sites
-  should share one enterprise VRF; if so, use one shared RT consistently.
+- The manifest models one shared TVI_ENTERPRISE VRF so all three sites can
+  exchange enterprise routes. Use a unique RD per PE while keeping a common RT.
 - The sample customer handoff address is illustrative and must be coordinated
   with the core router before use.
 - Verify LDP, labels, VPNv4 routes, VRF route tables and traffic isolation.

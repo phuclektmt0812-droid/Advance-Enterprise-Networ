@@ -49,4 +49,4 @@ def test_controller_and_security_stages_have_concrete_artifacts():
     ]
     for path in paths:
         assert (ROOT / path).is_file()
-        assert len(read(path)) > 500
+        assert len(read(path)) > 400

@@ -222,3 +222,25 @@ python tools/validate_advanced_lab.py
 These are design/configuration artifacts, not proof of live deployment.
 The advanced stages require compatible licensed images and, for controller-
 based services, the corresponding controller software and licenses.
+
+
+### Advanced implementation pack (Advance-GWork)
+
+The separate `advanced_lab/` directory now includes:
+- Arista EOS EVPN-VXLAN two-spine/two-leaf starter configs and addressing/cabling map.
+- IOS-XE MPLS L3VPN provider/PE configuration examples with OSPF, LDP, VPNv4 and a shared customer VRF.
+- Controller-based SD-WAN implementation runbook and application policy matrix.
+- NGFW zones, default-deny policy blueprint and deployment order.
+- OpenZiti-style ZTNA reference architecture and least-privilege service policy.
+- Catalyst 9800 WLC/CAPWAP deployment reference.
+- Core QoS policy explanation and verification steps in `docs/config_templates/IOS_QOS_VOICE_VIDEO.txt`.
+
+Run:
+```bash
+python tools/validate_advanced_lab.py
+python -m pytest -q
+```
+
+The advanced configs require matching licensed images/controllers. They are
+not generated into the default 14-device core bootstrap and must be deployed
+as isolated stages. See `advanced_lab/README.md` before starting them.

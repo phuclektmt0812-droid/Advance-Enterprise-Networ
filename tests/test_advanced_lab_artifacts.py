@@ -79,3 +79,36 @@ def test_evpn_leafs_have_access_ports_for_each_mapped_vlan():
         for vlan in (110, 120, 150):
             assert f"switchport access vlan {vlan}" in content
             assert f"vxlan vlan {vlan} vni" in content
+
+
+def test_evpn_vxlan_interfaces_are_enabled_and_tenant_ports_match_vnis():
+    for leaf in ("LEAF1", "LEAF2"):
+        content = read(f"advanced_lab/configs/evpn_vxlan/{leaf}.cfg")
+        assert "interface Vxlan1" in content
+        assert "no shutdown" in content.split("interface Vxlan1", 1)[1]
+        for port, vlan in (("Ethernet3", 110), ("Ethernet4", 120), ("Ethernet5", 150)):
+            section = content.split(f"interface {port}", 1)[1].split("interface ", 1)[0]
+            assert f"switchport access vlan {vlan}" in section
+
+
+def test_mpls_pe_ce_neighbors_are_configured_inside_customer_vrf_af():
+    for site, neighbor, asn in (
+        ("HCMC", "10.43.0.2", "65010"),
+        ("HANOI", "10.43.0.6", "65020"),
+        ("DANANG", "10.43.0.10", "65030"),
+    ):
+        content = read(f"advanced_lab/configs/mpls_l3vpn/PE-{site}.cfg")
+        af = content.split("address-family ipv4 vrf TVI_ENTERPRISE", 1)[1]
+        assert f"neighbor {neighbor} remote-as {asn}" in af
+        assert f"neighbor {neighbor} activate" in af
+        assert f"neighbor {neighbor} remote-as" not in content.split("address-family ipv4 vrf", 1)[0]
+
+
+def test_wireless_template_has_enterprise_authentication_and_guest_mapping():
+    content = read("advanced_lab/configs/wireless/C9800_CLI_TEMPLATE.txt")
+    for token in ("security dot1x authentication-list TVI-DOT1X",
+                  "security wpa wpa2 ciphers aes",
+                  "security web-auth",
+                  "vlan 110", "vlan 150",
+                  "wireless tag policy TVI-SITE-POLICY"):
+        assert token in content

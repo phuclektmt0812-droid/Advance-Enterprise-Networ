@@ -116,3 +116,18 @@ A feature is implemented only when its config is loaded by the intended
 platform, the platform accepts the configuration, the relevant positive and
 negative tests pass, and raw evidence is saved. Architecture text and static
 unit tests are not runtime proof.
+
+## 5. Separate implementation branch — Advance-GWork
+
+The `Advance-GWork` branch contains an isolated `advanced_lab/` pack:
+- machine-readable advanced topology and address plan;
+- staged EVPN-VXLAN, MPLS L3VPN, SD-WAN, NGFW, ZTNA/SASE and WLC/CAPWAP designs;
+- Arista EOS and IOS-XE reference configuration skeletons for EVPN-VXLAN
+  and MPLS L3VPN;
+- acceptance tests and a Python manifest validator.
+
+This extension is deliberately not merged into the core generator. The
+manifest validator checks structure and address allocation; it does not
+certify vendor CLI syntax or runtime forwarding. The advanced stages remain
+pending until the required licensed images/controllers are available and
+their acceptance tests pass.

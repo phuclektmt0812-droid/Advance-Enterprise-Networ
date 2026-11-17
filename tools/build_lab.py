@@ -69,6 +69,9 @@ def base_config(hostname: str, cred: dict) -> list[str]:
         'no ip domain-lookup',
         'ip domain name tvi.lab',
         'service password-encryption',
+        'aaa new-model',
+        'aaa authentication login default local',
+        'aaa authorization exec default local',
         f"username {cred['TVI_USERNAME']} privilege 15 secret 0 {cred['TVI_PASSWORD']}",
         f"enable secret 0 {cred['TVI_PASSWORD']}",
         'ip ssh version 2',
@@ -139,9 +142,14 @@ def render_switch(site_name: str, spec: dict, which: int, cred: dict) -> str:
               ' switchport mode access', f' switchport access vlan {vlan}']
         if number in port_map:
             c += [' spanning-tree portfast', ' spanning-tree bpduguard enable']
-            if site_name == 'hcmc' and number in (4, 5) and which == 1:
-                c += [' ip dhcp snooping trust', ' ip arp inspection trust']
-            c += [' no shutdown']
+            # Edge ports are untrusted. Sticky learning and a small MAC limit
+            # protect against casual CAM-table flooding / unauthorized endpoints.
+            # Use restrict (not shutdown) so a demo violation does not disable the port.
+            c += [' switchport port-security',
+                  ' switchport port-security maximum 2',
+                  ' switchport port-security violation restrict',
+                  ' switchport port-security mac-address sticky',
+                  ' no shutdown']
         else:
             c += [' shutdown']
     return '\n'.join(c)

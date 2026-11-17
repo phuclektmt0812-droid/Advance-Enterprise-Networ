@@ -149,6 +149,35 @@ overlay as controller-based SD-WAN, or ACL segmentation as ZTNA. A complete
 implementation requires compatible vendor images, licensing, additional
 nodes/services and runtime verification.
 
+# Advance-GWork Advanced Implementation Pack
+
+The `Advance-GWork` branch adds a separate `advanced_lab/` implementation
+pack without changing the core 14-device generator. It contains a machine-
+readable topology/address manifest and staged reference artifacts:
+
+- **EVPN-VXLAN:** Arista EOS two-spine/two-leaf starter configurations,
+  routed underlay, MP-BGP EVPN/VXLAN mapping, cabling and host addressing.
+- **MPLS L3VPN:** IOS-XE P/PE and site CE examples, OSPF/LDP/VPNv4
+  configuration references, CE handoff map and test loopbacks.
+- **SD-WAN:** controller deployment runbook and application policy matrix;
+  the separate dual-WAN routing fallback is explicitly not controller SD-WAN.
+- **NGFW:** security-zone and stateful policy blueprint plus an OPNsense lab
+  guide.
+- **ZTNA/SASE:** OpenZiti reference architecture and a script that prepares
+  the official quickstart; preparation alone does not complete identity,
+  connector or service-policy deployment.
+- **Wireless:** Catalyst 9800 WLAN/policy-profile/policy-tag reference for a
+  compatible WLC and lightweight AP.
+
+The advanced manifest validator and acceptance tests check artifact
+structure and selected configuration expectations. They do not prove vendor
+CLI acceptance, controller onboarding, CAPWAP join, packet forwarding or
+security policy behavior. Each advanced stage remains pending until deployed
+on compatible licensed images/services and its acceptance tests are captured.
+See `advanced_lab/README.md`,
+`advanced_lab/docs/implementation_matrix.md` and
+`advanced_lab/docs/acceptance_tests.md`.
+
 # Voice/Video QoS
 
 Voice VLAN80 interfaces mark incoming demonstration voice traffic with DSCP EF. The WAN QoS policy contains a priority class for EF (20%) and a bandwidth class for AF31 video (15%), with class-default forwarding for ordinary data. QoS should be evaluated under congestion, and voice/video counters must increase on the actual IOS image. Depending on the IOSv forwarding path and whether classification occurs before or after encryption, packet counters on the physical IPsec-transporting interface may require image-specific policy placement. Configuration text alone is insufficient QoS proof.

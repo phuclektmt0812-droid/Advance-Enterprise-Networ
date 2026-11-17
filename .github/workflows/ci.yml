@@ -1,0 +1,33 @@
+name: TVI network lab CI
+
+on:
+  push:
+    branches: [GWork]
+  pull_request:
+    branches: [GWork]
+  workflow_dispatch:
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Validate IP plan
+        run: python tools/validate_plan.py
+      - name: Generate lab configurations
+        run: python tools/build_lab.py
+      - name: Run unit tests
+        run: python -m pytest -q
+      - name: Compile Python sources
+        run: python -m compileall -q tools automation
+      - name: Check service scripts
+        run: bash -n server/prepare_hq_server.sh server/prepare_internet_server.sh

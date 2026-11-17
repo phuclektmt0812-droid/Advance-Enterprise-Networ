@@ -77,6 +77,17 @@
 | F01 | LAB REQUIRED | Controlled shutdown of primary WAN `Gi0/1` on HANOI-R1 while sending continuous pings | Convergence and end-to-end return via backup path within 3 minutes; include times and packet-loss measurement |
 | F02 | LAB REQUIRED | Restore primary interface; repeat ping | Expected primary path and gateway role restored |
 
+### F. Optional Zone-Based Firewall tests
+
+| ID | Type | Source | Command / action | Expected result |
+|---|---|---|---|---|
+| Z01 | LAB REQUIRED / OPT-IN | Disposable router after base acceptance | Apply docs/config_templates/IOSv_Zone_Based_Firewall_OPTIONAL.txt with exact interfaces substituted | IOS accepts syntax; OSPF/BGP/IPsec remain established |
+| Z02 | LAB REQUIRED / OPT-IN | Corporate and Guest client | Test permitted outbound TCP/UDP/ICMP and return traffic | Inside-to-outside sessions are inspected and replies work |
+| Z03 | LAB REQUIRED / OPT-IN | Isolated external test node | Attempt unsolicited inbound connection to a protected inside host | Unsolicited session is denied; record policy counters |
+| Z04 | LAB REQUIRED / OPT-IN | Router console | Execute rollback template if any routing/tunnel check fails | Original core routing and overlay restored |
+
+Do not apply ZBF until the base lab passes. The optional template is image-dependent and is not enabled by the default generator.
+
 ### Recommended evidence capture
 
 For each case record **Case ID, date/time, device/source, exact command, expected result, actual result, PASS/FAIL, screenshot or CLI output file, and any troubleshooting**. Put results in the PDF report appendix. Every `LAB REQUIRED` case is **pending until personally observed** in the actual emulation environment.

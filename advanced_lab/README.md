@@ -49,13 +49,17 @@ These are lab-only addresses; do not advertise them to a real ISP.
 
 ## Platform selection
 
-- EVPN-VXLAN: Arista vEOS-lab is the reference syntax in
-  `configs/evpn_vxlan/`; another vendor image needs a vendor-specific rewrite.
-- MPLS L3VPN: Cisco IOS-XE/CSR1000v is the reference syntax in
-  `configs/mpls_l3vpn/`; confirm MPLS, LDP and VRF support in the exact image.
+- EVPN-VXLAN: Arista vEOS-lab is the reference platform. Device configs are in
+  `configs/evpn_vxlan/` (SPINE1/2 and LEAF1/2) for the minimum two-leaf stage;
+  add LEAF3/4 only after the first stage passes.
+- MPLS L3VPN: Cisco IOS-XE/CSR1000v is the reference platform. P2, three PE configs and
+  CE handoff instructions are in `configs/mpls_l3vpn/`; confirm MPLS, LDP,
+  VRF and VPNv4 support in the exact image.
 - SD-WAN: requires licensed SD-WAN edge and controller/orchestrator images.
   Ordinary IOSv + GRE/IPsec is not controller-based SD-WAN.
-- NGFW: requires a supported firewall appliance image and licenses.
+- NGFW: use the optional OPNsense lab guide for a practical stateful firewall
+  + IDS demonstration, or a licensed commercial NGFW for vendor-specific
+  NGFW features.
 - ZTNA/SASE: requires identity, connector/broker and private application.
 - Wireless: requires a WLC and lightweight AP images that support CAPWAP.
 

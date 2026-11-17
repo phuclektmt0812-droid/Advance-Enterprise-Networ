@@ -4,7 +4,7 @@ on:
   push:
     branches: [GWork, Advance-GWork]
   pull_request:
-    branches: [GWork]
+    branches: [GWork, Advance-GWork]
   workflow_dispatch:
 
 jobs:

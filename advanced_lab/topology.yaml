@@ -57,18 +57,13 @@ addressing:
   mpls:
     provider_asn: 65141
     customer_vrfs:
-      - name: TVI_HCMC
-        rd: 65141:10
-        rt: 65141:10
-        site_prefix: 10.10.0.0/16
-      - name: TVI_HANOI
-        rd: 65141:20
-        rt: 65141:20
-        site_prefix: 10.20.0.0/16
-      - name: TVI_DANANG
-        rd: 65141:30
-        rt: 65141:30
-        site_prefix: 10.30.0.0/16
+      - name: TVI_ENTERPRISE
+        rd: 65141:100
+        rt: 65141:100
+        site_prefixes:
+          - 10.10.0.0/16
+          - 10.20.0.0/16
+          - 10.30.0.0/16
   sdwan:
     sites: [HCMC, HANOI, DANANG]
     transports: [INET_A, INET_B]

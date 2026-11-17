@@ -2,7 +2,7 @@ name: TVI network lab CI
 
 on:
   push:
-    branches: [GWork]
+    branches: [GWork, Advance-GWork]
   pull_request:
     branches: [GWork]
   workflow_dispatch:
@@ -23,6 +23,8 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Validate IP plan
         run: python tools/validate_plan.py
+      - name: Validate advanced lab manifest
+        run: python tools/validate_advanced_lab.py
       - name: Generate lab configurations
         run: python tools/build_lab.py
       - name: Run unit tests

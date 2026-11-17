@@ -35,3 +35,9 @@ def test_drawio_has_network_device_nodes():
     root=ET.parse(path).getroot()
     text=' '.join(x.attrib.get('value','') for x in root.iter('mxCell'))
     assert all(n in text for n in ('HCMC-R1','HANOI-R1','DANANG-R1','ISP-A','ISP-B'))
+
+def test_physical_drawio_is_valid_and_contains_all_sites():
+    path=Path(__file__).resolve().parents[1]/'docs'/'TVI_Physical_Topology.drawio'
+    root=ET.parse(path).getroot()
+    text=' '.join(x.attrib.get('value','') for x in root.iter('mxCell'))
+    assert all(n in text for n in ('HCMC HQ','HANOI R&amp;D','DA NANG LOGISTICS','ISP-A','ISP-B'))

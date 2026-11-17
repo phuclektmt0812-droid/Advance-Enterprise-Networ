@@ -8,17 +8,27 @@ def read(relative: str) -> str:
 
 
 def test_evpn_reference_has_underlay_and_overlay_configuration():
-    content = read("advanced_lab/configs/evpn_vxlan/DEVICE_CONFIGS.md")
+    spine = read("advanced_lab/configs/evpn_vxlan/SPINE1.cfg")
+    leaf = read("advanced_lab/configs/evpn_vxlan/LEAF1.cfg")
+    guide = read("advanced_lab/configs/evpn_vxlan/DEVICE_CONFIGS.md")
+    for token in ("router ospf 100", "address-family evpn", "route-reflector-client"):
+        assert token in spine
     for token in ("router ospf 100", "address-family evpn", "interface Vxlan1",
-                  "vxlan vlan 110 vni 10110", "show bgp evpn summary"):
-        assert token in content
+                  "vxlan vlan 110 vni 10110", "no shutdown"):
+        assert token in leaf
+    assert "show bgp evpn summary" in guide
 
 
 def test_mpls_reference_has_ldp_vpnv4_and_customer_vrf():
-    content = read("advanced_lab/configs/mpls_l3vpn/DEVICE_CONFIGS.md")
-    for token in ("mpls ip", "mpls ldp", "address-family vpnv4",
-                  "ip vrf TVI_ENTERPRISE", "route-target import"):
-        assert token in content
+    p_router = read("advanced_lab/configs/mpls_l3vpn/P1.cfg")
+    pe = read("advanced_lab/configs/mpls_l3vpn/PE-HCMC.cfg")
+    guide = read("advanced_lab/configs/mpls_l3vpn/DEVICE_CONFIGS.md")
+    for token in ("mpls ip", "mpls ldp", "router ospf 41"):
+        assert token in p_router
+    for token in ("address-family vpnv4", "ip vrf TVI_ENTERPRISE",
+                  "route-target import", "address-family ipv4 vrf TVI_ENTERPRISE"):
+        assert token in pe
+    assert "show mpls ldp neighbor" in guide
 
 
 def test_core_qos_is_documented_and_attached_by_generator():

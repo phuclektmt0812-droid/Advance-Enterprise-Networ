@@ -1,0 +1,99 @@
+TVI IOSv ZONE-BASED FIREWALL (OPTIONAL HARDENING TEMPLATE)
+===========================================================
+
+STATUS
+------
+This is an opt-in template, not part of the default generated bootstrap.
+Apply only after the base routing, BGP, GRE/IPsec and failover tests pass.
+IOS feature support and syntax vary by IOSv release. Validate on a disposable
+router first and keep console access available.
+
+DESIGN
+------
+- TVI-INSIDE contains campus VLAN subinterfaces, the R1-R2 transit and GRE
+  tunnel interfaces. Same-zone routing keeps internal OSPF/BGP and inter-site
+  traffic from being unintentionally filtered by this edge policy.
+- TVI-OUTSIDE contains the ISP-facing physical interface.
+- New sessions from inside to outside are inspected (TCP/UDP/ICMP).
+- Unsolicited outside-to-inside sessions are denied by the zone-pair policy.
+- Existing Guest and IoT ACLs remain responsible for internal segmentation.
+- Router control-plane traffic (BGP, IKE/IPsec, routing protocols) must be
+  verified before enabling any self-zone policy. This template deliberately
+  does not create a self-zone policy.
+
+PRE-CHECK
+---------
+show version
+show ip interface brief
+show ip ospf neighbor
+show ip bgp summary
+show crypto isakmp sa
+show crypto ipsec sa
+show standby brief
+show running-config | section zone
+
+TEMPLATE (replace <SITE_LAN_SUBIFS>, <SITE_TUNNELS> and <WAN_IF>):
+-------------------------------------------------------------------
+configure terminal
+zone security TVI-INSIDE
+zone security TVI-OUTSIDE
+
+class-map type inspect match-any TVI-OUTBOUND-BASIC
+ match protocol tcp
+ match protocol udp
+ match protocol icmp
+
+policy-map type inspect TVI-INSIDE-TO-OUTSIDE
+ class type inspect TVI-OUTBOUND-BASIC
+  inspect
+ class class-default
+  drop log
+
+zone-pair security TVI-IN-OUT source TVI-INSIDE destination TVI-OUTSIDE
+ service-policy type inspect TVI-INSIDE-TO-OUTSIDE
+
+interface <WAN_IF>
+ zone-member security TVI-OUTSIDE
+
+! Add every routed campus subinterface, the R1-R2 transit interface,
+! and every GRE tunnel interface to TVI-INSIDE.
+interface <SITE_LAN_SUBIFS>
+ zone-member security TVI-INSIDE
+interface <SITE_TUNNELS>
+ zone-member security TVI-INSIDE
+end
+write memory
+
+POST-CHECK / ACCEPTANCE
+-----------------------
+1. Repeat all pre-check commands. OSPF/BGP must remain established.
+2. Verify GRE tunnel interfaces and IPsec SA counters continue to increase.
+3. Verify corporate and Guest clients can reach the simulated Internet as
+   permitted, with return traffic inspected.
+4. Verify unsolicited inbound test traffic is denied.
+5. Verify Guest and IoT ACL negative tests still increment deny counters.
+6. Repeat WAN failover and restoration tests.
+
+ROLLBACK
+--------
+Use the local device console. Remove zone membership from every interface
+before removing the zone-pair/policy/zones:
+ configure terminal
+ interface <WAN_IF>
+  no zone-member security TVI-OUTSIDE
+ interface <SITE_LAN_SUBIFS>
+  no zone-member security TVI-INSIDE
+ interface <SITE_TUNNELS>
+  no zone-member security TVI-INSIDE
+ no zone-pair security TVI-IN-OUT
+ no policy-map type inspect TVI-INSIDE-TO-OUTSIDE
+ no class-map type inspect match-any TVI-OUTBOUND-BASIC
+ no zone security TVI-INSIDE
+ no zone security TVI-OUTSIDE
+ end
+ write memory
+
+Do not paste literal angle-bracket placeholders. Replace them with actual
+interface names from docs/interface_matrix.csv and show ip interface brief.
+If the IOSv image rejects a command, stop and record the exact image version
+and CLI error; do not silently omit a security feature.

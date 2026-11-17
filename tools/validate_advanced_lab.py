@@ -31,6 +31,7 @@ def validate(data: dict) -> list[str]:
                 errors.append(f"blocks {name} ({net}) and {other_name} ({other}) overlap")
         pools.append((name, net))
 
+    seen_links: list[tuple[str, ipaddress._BaseNetwork]] = []
     for group, entries in addressing.get("links", {}).items():
         for raw in entries:
             try:
@@ -43,6 +44,10 @@ def validate(data: dict) -> list[str]:
             for core in reserved:
                 if net.overlaps(core):
                     errors.append(f"link {group} {net} overlaps core block {core}")
+            for other_group, other in seen_links:
+                if net.overlaps(other):
+                    errors.append(f"link {group} {net} overlaps link {other_group} {other}")
+            seen_links.append((group, net))
 
     loopbacks = []
     for raw in addressing.get("vtep_loopbacks", []):
@@ -64,11 +69,20 @@ def validate(data: dict) -> list[str]:
         errors.append("duplicate EVPN VLAN ID")
     if len(set(vni_ids)) != len(vni_ids):
         errors.append("duplicate EVPN VNI")
+    tenant_subnets: list[tuple[str, ipaddress._BaseNetwork]] = []
     for item in vnis:
         try:
-            ipaddress.ip_network(item["subnet"], strict=True)
+            subnet = ipaddress.ip_network(item["subnet"], strict=True)
+            tenant_subnets.append((str(item.get("name", item.get("vlan"))), subnet))
+            tenant_block = ipaddress.ip_network(addressing["blocks"]["evpn_tenant"], strict=True)
+            if not subnet.subnet_of(tenant_block):
+                errors.append(f"EVPN subnet {subnet} is outside evpn_tenant block {tenant_block}")
         except (KeyError, ValueError) as exc:
             errors.append(f"invalid EVPN subnet in {item}: {exc}")
+    for index, (name, subnet) in enumerate(tenant_subnets):
+        for other_name, other in tenant_subnets[index + 1:]:
+            if subnet.overlaps(other):
+                errors.append(f"EVPN tenant subnets {name} ({subnet}) and {other_name} ({other}) overlap")
 
     vrfs = data.get("mpls", {}).get("customer_vrfs", [])
     names = [x.get("name") for x in vrfs]

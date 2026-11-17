@@ -24,6 +24,8 @@
 | L05 | LAB REQUIRED | HANOI-SW1 | Shut one of Gi0/1 or Gi0/2 *within Port-channel1* | Port-channel remains up via surviving member; re-enable afterward |
 | L06 | LAB REQUIRED | SW1 | `show ip dhcp snooping` / `show ip arp inspection` | Required VLANs and trusted uplinks configured |
 | L07 | LAB REQUIRED | SW1 | Plug untrusted rogue DHCP server into a test access port | Rogue DHCP offers blocked; legitimate HQ DHCP still functions |
+| L08 | LAB REQUIRED | Each access switch | Run show port-security interface Gi0/3 and connect a second unauthorized MAC on an isolated test port | Port Security enabled, maximum 2, violation restrict; violation counter increments without shutting the port |
+| L09 | LAB REQUIRED | Each access switch | Run show port-security address and show port-security | Sticky secure MAC addresses are learned on intended endpoint ports; trunks/uplinks are not configured as access-port security |
 
 ## C. Routing, IPv6, redundancy
 
